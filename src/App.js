@@ -1,122 +1,146 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  // Estado para armazenar a lista de procedimentos
-  const [procedimentos, setProcedimentos] = useState([
-    { id: 1, nome: 'Toxina Botulínica', categoria: 'Facial', duracao: '4 meses' },
-    { id: 2, nome: 'Preenchimento Labial', categoria: 'Facial', duracao: '12 meses' },
-    { id: 3, nome: 'Bioestimulador de Colágeno', categoria: 'Corporal/Facial', duracao: '18 meses' },
-  ]);
+// Banco de perguntas com imagens atualizadas e links seguros
+const perguntas = [
+  {
+    icone: '💉',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Medical_Syringe_%28transparent_background%29.png/640px-Medical_Syringe_%28transparent_background%29.png',
+    p: 'Qual é o principal mecanismo de ação da Toxina Botulínica tipo A?',
+    o: ['Preenchimento de rugas profundas', 'Bloqueio da liberação de acetilcolina na junção neuromuscular', 'Estimulação direta de fibroblastos e colágeno tipo III'],
+    r: 1,
+    explicacao: 'A toxina botulínica atua bloqueando a liberação de acetilcolina, impedindo temporariamente a contração muscular responsável pelas rugas dinâmicas.'
+  },
+  {
+    icone: '✨',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Collagene.png/640px-Collagene.png',
+    p: 'Qual destes é considerado um bioestimulador de colágeno composto por Ácido Poli-L-Láctico?',
+    o: ['Sculptra', 'Radiesse', 'Ellansé'],
+    r: 0,
+    explicacao: 'O Sculptra é composto por Ácido Poli-L-Láctico (PLLA), que estimula gradualmente a produção de colágeno pelo próprio organismo.'
+  },
+  {
+    icone: '🎯',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Skin_layers.png/640px-Skin_layers.png',
+    p: 'Qual é a camada anatomofisiológica alvo preferencial para a aplicação profunda de bioestimuladores?',
+    o: ['Epiderme superficial', 'Hipoderme / Derme profunda', 'Músculo estriado esquelético'],
+    r: 1,
+    explicacao: 'A aplicação na hipoderme ou derme profunda garante a integração correta do produto e estimula o tecido conjuntivo de sustentação.'
+  },
+  {
+    icone: '⚠️',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Human_face_svg.svg/640px-Human_face_svg.svg.png',
+    p: 'Qual é o principal risco vascular anatômico ao realizar procedimentos de preenchimento na região glabelar?',
+    o: ['Hiperpigmentação melânica pós-inflamatória', 'Edema transitório autolimitado', 'Oclusão vascular da Artéria Supra-troclear / Supra-orbitária'],
+    r: 2,
+    explicacao: 'A região glabelar possui uma rede vascular complexa; a oclusão da artéria supra-troclear é uma complicação grave que exige protocolo imediato de reversão.'
+  },
+  {
+    icone: '💧',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Hyaluronic_acid_structure.png/640px-Hyaluronic_acid_structure.png',
+    p: 'Qual é a principal finalidade do Ácido Hialurônico de alta reticulação (high cross-linking)?',
+    o: ['Hidratação superficial de derme papilar', 'Volumização, reestruturação e sustentação profunda', 'Despigmentação de manchas melanodérmicas'],
+    r: 1,
+    explicacao: 'Ácidos hialurônicos altamente reticulados possuem maior coesividade e resistência, sendo indicados para estruturação de marcos faciais e volumização.'
+  }
+];
 
-  // Estados para o jogo (Gamificação)
-  const [xp, setXp] = useState(30);
-  const [nivel, setNivel] = useState(1);
-  const [conquistas, setConquistas] = useState(['Iniciante na Estética 🌟']);
+export default function App() {
+  const [q, setQ] = useState(0);
+  const [pts, setPts] = useState(0);
+  const [respostasUsuario, setRespostasUsuario] = useState([]);
+  const [etapa, setEtapa] = useState('quiz'); // 'quiz', 'fim', ou 'gabarito'
 
-  // Estados para os inputs
-  const [novoNome, setNovoNome] = useState('');
-  const [novaCategoria, setNovaCategoria] = useState('');
-  const [busca, setBusca] = useState('');
+  const handleResp = (idx) => {
+    const acertou = idx === perguntas[q].r;
+    if (acertou) setPts(pts + 20);
 
-  // Função para adicionar procedimento e pontuar no jogo
-  const handleAdicionar = (e) => {
-    e.preventDefault();
-    if (!novoNome.trim() || !novaCategoria.trim()) return;
+    setRespostasUsuario([...respostasUsuario, { escolha: idx, correta: perguntas[q].r }]);
 
-    const novoItem = {
-      id: Date.now(),
-      nome: novoNome,
-      categoria: novaCategoria,
-      duracao: 'Variável',
-    };
-
-    const novaLista = [...procedimentos, novoItem];
-    setProcedimentos(novaLista);
-    setNovoNome('');
-    setNovaCategoria('');
-
-    // Sistema de Pontuação e Níveis
-    const novoXp = xp + 20;
-    setXp(novoXp);
-
-    if (novoXp >= 100 && nivel === 1) {
-      setNivel(2);
-      setConquistas((prev) => [...prev, 'Especialista em Catálogo 💼']);
-    } else if (novoXp >= 200 && nivel === 2) {
-      setNivel(3);
-      setConquistas((prev) => [...prev, 'Mestre da Estética Avançada ✨']);
+    if (q + 1 < perguntas.length) {
+      setQ(q + 1);
+    } else {
+      setEtapa('fim');
     }
   };
 
-  // Filtragem baseada na busca
-  const procedimentosFiltrados = procedimentos.filter((item) =>
-    item.nome.toLowerCase().includes(busca.toLowerCase())
-  );
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div className="page-container">
+      <div className="glass-card">
 
-        <h2>🎮 Estética Quest: Gerenciador de Clínica</h2>
-        <p>Cadastre procedimentos, ganhe XP e evolua sua clínica!</p>
-
-        {/* Painel de Status do Jogador */}
-        <div style={{ background: 'rgba(255,255,255,0.15)', padding: '15px', borderRadius: '10px', margin: '15px 0', width: '100%', maxWidth: '450px', border: '1px solid rgba(255,255,255,0.3)' }}>
-          <h3 style={{ margin: '0 0 10px 0', color: '#61dafb' }}>Status do Profissional</h3>
-          <p style={{ margin: '5px 0' }}>⭐ <strong>Nível:</strong> {nivel}</p>
-          <p style={{ margin: '5px 0' }}>✨ <strong>XP:</strong> {xp} / {nivel * 100}</p>
-          <p style={{ margin: '5px 0' }}>🏆 <strong>Conquistas:</strong> {conquistas.join(', ')}</p>
-        </div>
-
-        {/* Barra de Pesquisa */}
-        <div style={{ margin: '10px 0', width: '100%', maxWidth: '450px' }}>
-          <input
-            type="text"
-            placeholder="🔍 Buscar procedimento..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: 'none', boxSizing: 'border-box' }}
-          />
-        </div>
-
-        {/* Formulário de Cadastro */}
-        <form onSubmit={handleAdicionar} style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: '450px' }}>
-          <input
-            type="text"
-            placeholder="Nome do procedimento"
-            value={novoNome}
-            onChange={(e) => setNovoNome(e.target.value)}
-            style={{ flex: 1, padding: '10px', borderRadius: '6px', border: 'none', minWidth: '130px' }}
-          />
-          <input
-            type="text"
-            placeholder="Categoria (ex: Facial)"
-            value={novaCategoria}
-            onChange={(e) => setNovaCategoria(e.target.value)}
-            style={{ flex: 1, padding: '10px', borderRadius: '6px', border: 'none', minWidth: '130px' }}
-          />
-          <button type="submit" style={{ padding: '10px 20px', cursor: 'pointer', borderRadius: '6px', border: 'none', fontWeight: 'bold', backgroundColor: '#61dafb', color: '#282c34' }}>
-            Cadastrar (+20 XP)
-          </button>
-        </form>
-
-        {/* Lista de Exibição */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '450px', maxHeight: '250px', overflowY: 'auto' }}>
-          {procedimentosFiltrados.map((item) => (
-            <div key={item.id} style={{ background: 'rgba(255,255,255,0.1)', padding: '12px', borderRadius: '6px', textAlign: 'left', borderLeft: '4px solid #61dafb' }}>
-              <h4 style={{ margin: '0 0 5px 0' }}>{item.nome}</h4>
-              <p style={{ margin: '0', fontSize: '14px' }}><strong>Categoria:</strong> {item.categoria}</p>
-              <p style={{ margin: '0', fontSize: '14px' }}><strong>Duração:</strong> {item.duracao}</p>
+        {/* Etapa do Quiz */}
+        {etapa === 'quiz' && (
+          <div>
+            <div className="header-quiz">
+              <span className="badge">Questão {q + 1} de {perguntas.length}</span>
+              <span className="icone-header">{perguntas[q].icone}</span>
             </div>
-          ))}
-        </div>
 
-      </header>
+            <div className="image-container">
+              <img src={perguntas[q].imagem} alt="Ilustração estética" className="imagem-quiz" />
+            </div>
+
+            <h1 className="titulo">Estética Master Quiz</h1>
+            <p className="pergunta-texto">{perguntas[q].p}</p>
+
+            <div className="grid">
+              {perguntas[q].o.map((op, i) => (
+                <button key={i} onClick={() => handleResp(i)} className="botao">
+                  {op}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Etapa de Fim de Jogo */}
+        {etapa === 'fim' && (
+          <div style={{ textAlign: 'center' }}>
+            <h1 className="titulo">🏆 Quiz Concluído!</h1>
+            <p className="subtitulo">Sua pontuação: <strong>{pts} / 100 XP</strong></p>
+            <p style={{ color: '#666', fontSize: '20px', marginBottom: '30px', fontWeight: '500' }}>
+              {pts >= 80 ? '✨ Excelente domínio técnico!' : '💡 Bom desempenho! Confira o gabarito detalhado abaixo para aprimorar seus conhecimentos.'}
+            </p>
+            <button onClick={() => setEtapa('gabarito')} className="botao-primario">
+              Ver Gabarito Explicado 📖
+            </button>
+          </div>
+        )}
+
+        {/* Etapa de Gabarito */}
+        {etapa === 'gabarito' && (
+          <div>
+            <h1 className="titulo">Gabarito & Explicações</h1>
+            <div className="container-gabarito">
+              {perguntas.map((item, index) => {
+                const acertou = respostasUsuario[index]?.escolha === item.r;
+                return (
+                  <div key={index} className="card-gabarito">
+                    <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: '#8B7355', fontSize: '18px' }}>
+                      {item.icone} {index + 1}. {item.p}
+                    </p>
+                    <p style={{ margin: '4px 0', fontSize: '17px', color: acertou ? '#2e7d32' : '#c62828' }}>
+                      <strong>Sua resposta:</strong> {item.o[respostasUsuario[index]?.escolha]} {acertou ? '✓' : '✗'}
+                    </p>
+                    {!acertou && (
+                      <p style={{ margin: '4px 0', fontSize: '17px', color: '#2e7d32' }}>
+                        <strong>Resposta correta:</strong> {item.o[item.r]}
+                      </p>
+                    )}
+                    <p style={{ margin: '10px 0 0 0', fontSize: '16px', color: '#555', fontStyle: 'italic', background: 'rgba(197,160,89,0.12)', padding: '10px', borderRadius: '8px' }}>
+                      <strong>Explicação:</strong> {item.explicacao}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <button onClick={() => window.location.reload()} className="botao-primario">
+              Reiniciar Desafio 🔄
+            </button>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
-
-export default App;
