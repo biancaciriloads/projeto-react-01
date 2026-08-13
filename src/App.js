@@ -5,7 +5,7 @@ import './App.css';
 const perguntas = [
   {
     icone: '💉',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Medical_Syringe_%28transparent_background%29.png/640px-Medical_Syringe_%28transparent_background%29.png',
+    imagem: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80',
     p: 'Qual é o principal mecanismo de ação da Toxina Botulínica tipo A?',
     o: ['Preenchimento de rugas profundas', 'Bloqueio da liberação de acetilcolina na junção neuromuscular', 'Estimulação direta de fibroblastos e colágeno tipo III'],
     r: 1,
