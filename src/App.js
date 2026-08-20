@@ -13,7 +13,7 @@ const perguntas = [
   },
   {
     icone: '✨',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Collagene.png/640px-Collagene.png',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrksYGxSdaDJXodNWibrEguybl5MM0hsVepopaA0WHsFlxNWDLj5C59EIl&s=10',
     p: 'Qual destes é considerado um bioestimulador de colágeno composto por Ácido Poli-L-Láctico?',
     o: ['Sculptra', 'Radiesse', 'Ellansé'],
     r: 0,
@@ -21,7 +21,7 @@ const perguntas = [
   },
   {
     icone: '🎯',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Skin_layers.png/640px-Skin_layers.png',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4ohh4lpCiHkZlQHqr_aLNKCt8TBEVQXT12XLu_34zDdRGKbQKazcwB78&s=10',
     p: 'Qual é a camada anatomofisiológica alvo preferencial para a aplicação profunda de bioestimuladores?',
     o: ['Epiderme superficial', 'Hipoderme / Derme profunda', 'Músculo estriado esquelético'],
     r: 1,
@@ -29,7 +29,7 @@ const perguntas = [
   },
   {
     icone: '⚠️',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Human_face_svg.svg/640px-Human_face_svg.svg.png',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMioLpc7hBNmLKu7XSdUWBFHPkgpFOg11tM44NtCmqe8gLr2QIroKQ1Ao&s=10',
     p: 'Qual é o principal risco vascular anatômico ao realizar procedimentos de preenchimento na região glabelar?',
     o: ['Hiperpigmentação melânica pós-inflamatória', 'Edema transitório autolimitado', 'Oclusão vascular da Artéria Supra-troclear / Supra-orbitária'],
     r: 2,
@@ -37,7 +37,7 @@ const perguntas = [
   },
   {
     icone: '💧',
-    imagem: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Hyaluronic_acid_structure.png/640px-Hyaluronic_acid_structure.png',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDJCkWsZ50v1gu-ITa3eTgcd5efDeo9wM6ILbBvVLNutPB3d183_LpjAzf&s=10',
     p: 'Qual é a principal finalidade do Ácido Hialurônico de alta reticulação (high cross-linking)?',
     o: ['Hidratação superficial de derme papilar', 'Volumização, reestruturação e sustentação profunda', 'Despigmentação de manchas melanodérmicas'],
     r: 1,
