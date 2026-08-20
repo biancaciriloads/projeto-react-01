@@ -20,7 +20,11 @@
   --gabarito-border: #E5D5BC;
   --explic-bg: rgba(197, 160, 89, 0.12);
   --correct: #2e7d32;
+  --correct-soft: rgba(46, 125, 50, 0.15);
   --wrong: #c62828;
+  --carta-frente: #FFFFFF;
+  --carta-verso: #C5A059;
+  --carta-texto: #333333;
 }
 
 [data-theme="dark"] {
@@ -43,7 +47,11 @@
   --gabarito-border: #444444;
   --explic-bg: rgba(197, 160, 89, 0.18);
   --correct: #66bb6a;
+  --correct-soft: rgba(102, 187, 106, 0.2);
   --wrong: #ef5350;
+  --carta-frente: #2b2b2b;
+  --carta-verso: #8B7355;
+  --carta-texto: #e8e8e8;
 }
 
 body {
@@ -101,47 +109,6 @@ body {
   transform: translateY(-2px) scale(1.05);
 }
 
-.header-quiz {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.badge {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--title-color);
-  background-color: var(--accent-soft);
-  padding: 8px 16px;
-  border-radius: 20px;
-}
-
-.icone-header {
-  font-size: 32px;
-}
-
-.image-container {
-  width: 100%;
-  height: 200px;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  border: 1px solid var(--image-border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.imagem-quiz {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.imagem-quiz:hover {
-  transform: scale(1.03);
-}
-
 .titulo {
   color: var(--title-color);
   font-size: 32px;
@@ -151,47 +118,78 @@ body {
   font-weight: 700;
 }
 
-.pergunta-texto {
-  font-size: 22px;
-  color: var(--text-color);
-  text-align: center;
-  margin-bottom: 25px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
 .subtitulo {
   font-size: 24px;
   color: var(--sub-color);
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
 }
 
-.grid {
-  display: flex;
-  flex-direction: column;
+.grid-memoria {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
 
-.botao {
-  padding: 18px 22px;
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
-  background-color: var(--btn-bg);
+.carta {
+  aspect-ratio: 1 / 1;
+  perspective: 600px;
+  border: none;
+  background: none;
   cursor: pointer;
-  font-size: 18px;
-  color: var(--btn-text);
-  text-align: left;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  padding: 0;
+  position: relative;
 }
 
-.botao:hover {
-  background-color: var(--accent) !important;
-  color: #FFFFFF !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px var(--card-shadow);
+.carta-interna {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  border-radius: 14px;
+}
+
+.carta.virada .carta-interna,
+.carta.combinada .carta-interna {
+  transform: rotateY(180deg);
+}
+
+.carta-frente,
+.carta-verso {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.carta-frente {
+  background: var(--carta-frente);
+  color: var(--carta-texto);
+  border: 2px solid var(--card-border);
+  transform: rotateY(180deg);
+}
+
+.carta-verso {
+  background: var(--carta-verso);
+  color: #FFFFFF;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.carta.combinada .carta-frente {
+  background: var(--correct-soft);
+  border-color: var(--correct);
+  color: var(--correct);
+}
+
+.carta:disabled {
+  cursor: default;
 }
 
 .botao-primario {
@@ -214,28 +212,17 @@ body {
   transform: translateY(-2px);
 }
 
-.container-gabarito {
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 8px;
-  text-align: left;
-  margin-bottom: 25px;
-}
-
-.container-gabarito::-webkit-scrollbar {
-  width: 6px;
-}
-
-.container-gabarito::-webkit-scrollbar-thumb {
-  background-color: var(--accent);
-  border-radius: 10px;
-}
-
-.card-gabarito {
-  background: var(--card-gabarito-bg);
-  border: 1px solid var(--gabarito-border);
-  padding: 18px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+@media (max-width: 500px) {
+  .grid-memoria {
+    gap: 10px;
+  }
+  .carta-frente {
+    font-size: 26px;
+  }
+  .carta-verso {
+    font-size: 22px;
+  }
+  .glass-card {
+    padding: 25px;
+  }
 }
