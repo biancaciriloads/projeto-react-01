@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 // Banco de perguntas com imagens atualizadas e links seguros
@@ -50,6 +50,16 @@ export default function App() {
   const [pts, setPts] = useState(0);
   const [respostasUsuario, setRespostasUsuario] = useState([]);
   const [etapa, setEtapa] = useState('quiz'); // 'quiz', 'fim', ou 'gabarito'
+  const [tema, setTema] = useState(localStorage.getItem('tema') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', tema);
+    localStorage.setItem('tema', tema);
+  }, [tema]);
+
+  const alternarTema = () => {
+    setTema(tema === 'light' ? 'dark' : 'light');
+  };
 
   const handleResp = (idx) => {
     const acertou = idx === perguntas[q].r;
@@ -66,6 +76,15 @@ export default function App() {
 
   return (
     <div className="page-container">
+      <button
+        className="theme-toggle"
+        onClick={alternarTema}
+        aria-label="Alternar tema"
+        title={tema === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
+      >
+        {tema === 'light' ? '🌙' : '☀️'}
+      </button>
+
       <div className="glass-card">
 
         {/* Etapa do Quiz */}
@@ -98,7 +117,7 @@ export default function App() {
           <div style={{ textAlign: 'center' }}>
             <h1 className="titulo">🏆 Quiz Concluído!</h1>
             <p className="subtitulo">Sua pontuação: <strong>{pts} / 100 XP</strong></p>
-            <p style={{ color: '#666', fontSize: '20px', marginBottom: '30px', fontWeight: '500' }}>
+            <p style={{ color: 'var(--muted)', fontSize: '20px', marginBottom: '30px', fontWeight: '500' }}>
               {pts >= 80 ? '✨ Excelente domínio técnico!' : '💡 Bom desempenho! Confira o gabarito detalhado abaixo para aprimorar seus conhecimentos.'}
             </p>
             <button onClick={() => setEtapa('gabarito')} className="botao-primario">
@@ -116,18 +135,18 @@ export default function App() {
                 const acertou = respostasUsuario[index]?.escolha === item.r;
                 return (
                   <div key={index} className="card-gabarito">
-                    <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: '#8B7355', fontSize: '18px' }}>
+                    <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--title-color)', fontSize: '18px' }}>
                       {item.icone} {index + 1}. {item.p}
                     </p>
-                    <p style={{ margin: '4px 0', fontSize: '17px', color: acertou ? '#2e7d32' : '#c62828' }}>
+                    <p style={{ margin: '4px 0', fontSize: '17px', color: acertou ? 'var(--correct)' : 'var(--wrong)' }}>
                       <strong>Sua resposta:</strong> {item.o[respostasUsuario[index]?.escolha]} {acertou ? '✓' : '✗'}
                     </p>
                     {!acertou && (
-                      <p style={{ margin: '4px 0', fontSize: '17px', color: '#2e7d32' }}>
+                      <p style={{ margin: '4px 0', fontSize: '17px', color: 'var(--correct)' }}>
                         <strong>Resposta correta:</strong> {item.o[item.r]}
                       </p>
                     )}
-                    <p style={{ margin: '10px 0 0 0', fontSize: '16px', color: '#555', fontStyle: 'italic', background: 'rgba(197,160,89,0.12)', padding: '10px', borderRadius: '8px' }}>
+                    <p style={{ margin: '10px 0 0 0', fontSize: '16px', color: 'var(--muted-alt)', fontStyle: 'italic', background: 'var(--explic-bg)', padding: '10px', borderRadius: '8px' }}>
                       <strong>Explicação:</strong> {item.explicacao}
                     </p>
                   </div>

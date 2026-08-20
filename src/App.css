@@ -1,10 +1,57 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
+:root {
+  --bg-color: #FFFAF0;
+  --text-color: #333333;
+  --card-bg: rgba(255, 255, 255, 0.88);
+  --card-border: #C5A059;
+  --card-shadow: rgba(197, 160, 89, 0.25);
+  --title-color: #8B7355;
+  --sub-color: #555555;
+  --muted: #666666;
+  --muted-alt: #555555;
+  --accent: #C5A059;
+  --accent-hover: #A98745;
+  --accent-soft: rgba(197, 160, 89, 0.15);
+  --btn-bg: #FFFFFF;
+  --btn-text: #444444;
+  --image-border: #E5D5BC;
+  --card-gabarito-bg: #FFFFFF;
+  --gabarito-border: #E5D5BC;
+  --explic-bg: rgba(197, 160, 89, 0.12);
+  --correct: #2e7d32;
+  --wrong: #c62828;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #e8e8e8;
+  --card-bg: rgba(40, 40, 40, 0.92);
+  --card-border: #8B7355;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+  --title-color: #D9B98C;
+  --sub-color: #bdbdbd;
+  --muted: #aaaaaa;
+  --muted-alt: #bbbbbb;
+  --accent: #C5A059;
+  --accent-hover: #E0B873;
+  --accent-soft: rgba(197, 160, 89, 0.22);
+  --btn-bg: #2b2b2b;
+  --btn-text: #e8e8e8;
+  --image-border: #444444;
+  --card-gabarito-bg: #2b2b2b;
+  --gabarito-border: #444444;
+  --explic-bg: rgba(197, 160, 89, 0.18);
+  --correct: #66bb6a;
+  --wrong: #ef5350;
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
-  background-color: #FFFAF0;
-  color: #333333;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .page-container {
@@ -17,16 +64,41 @@ body {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--card-bg);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   padding: 45px;
   border-radius: 24px;
-  border: 1px solid #C5A059;
+  border: 1px solid var(--card-border);
   width: 100%;
   max-width: 680px;
-  box-shadow: 0 12px 40px rgba(197, 160, 89, 0.25);
+  box-shadow: 0 12px 40px var(--card-shadow);
   box-sizing: border-box;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  color: var(--title-color);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px) scale(1.05);
 }
 
 .header-quiz {
@@ -39,8 +111,8 @@ body {
 .badge {
   font-size: 16px;
   font-weight: 700;
-  color: #8B7355;
-  background-color: rgba(197, 160, 89, 0.15);
+  color: var(--title-color);
+  background-color: var(--accent-soft);
   padding: 8px 16px;
   border-radius: 20px;
 }
@@ -55,7 +127,7 @@ body {
   border-radius: 14px;
   overflow: hidden;
   margin-bottom: 20px;
-  border: 1px solid #E5D5BC;
+  border: 1px solid var(--image-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -71,7 +143,7 @@ body {
 }
 
 .titulo {
-  color: #8B7355;
+  color: var(--title-color);
   font-size: 32px;
   text-align: center;
   margin-bottom: 15px;
@@ -81,7 +153,7 @@ body {
 
 .pergunta-texto {
   font-size: 22px;
-  color: #333333;
+  color: var(--text-color);
   text-align: center;
   margin-bottom: 25px;
   font-weight: 600;
@@ -90,7 +162,7 @@ body {
 
 .subtitulo {
   font-size: 24px;
-  color: #555555;
+  color: var(--sub-color);
   text-align: center;
   margin-bottom: 15px;
 }
@@ -104,11 +176,11 @@ body {
 .botao {
   padding: 18px 22px;
   border-radius: 12px;
-  border: 1px solid #C5A059;
-  background-color: #FFFFFF;
+  border: 1px solid var(--card-border);
+  background-color: var(--btn-bg);
   cursor: pointer;
   font-size: 18px;
-  color: #444444;
+  color: var(--btn-text);
   text-align: left;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -116,10 +188,10 @@ body {
 }
 
 .botao:hover {
-  background-color: #C5A059 !important;
+  background-color: var(--accent) !important;
   color: #FFFFFF !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3);
+  box-shadow: 0 6px 15px var(--card-shadow);
 }
 
 .botao-primario {
@@ -127,17 +199,17 @@ body {
   padding: 18px;
   border-radius: 12px;
   border: none;
-  background-color: #C5A059;
+  background-color: var(--accent);
   color: #FFFFFF;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
+  box-shadow: 0 4px 15px var(--card-shadow);
   transition: all 0.3s ease;
 }
 
 .botao-primario:hover {
-  background-color: #A98745 !important;
+  background-color: var(--accent-hover) !important;
   opacity: 0.95;
   transform: translateY(-2px);
 }
@@ -155,13 +227,13 @@ body {
 }
 
 .container-gabarito::-webkit-scrollbar-thumb {
-  background-color: #C5A059;
+  background-color: var(--accent);
   border-radius: 10px;
 }
 
 .card-gabarito {
-  background: #FFFFFF;
-  border: 1px solid #E5D5BC;
+  background: var(--card-gabarito-bg);
+  border: 1px solid var(--gabarito-border);
   padding: 18px;
   border-radius: 12px;
   margin-bottom: 15px;
