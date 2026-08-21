@@ -49,6 +49,7 @@ export default function App() {
   const [q, setQ] = useState(0);
   const [pts, setPts] = useState(0);
   const [respostasUsuario, setRespostasUsuario] = useState([]);
+  const [respostaAtual, setRespostaAtual] = useState(null);
   const [etapa, setEtapa] = useState('quiz'); // 'quiz', 'fim', ou 'gabarito'
   const [tema, setTema] = useState(localStorage.getItem('tema') || 'light');
 
@@ -62,16 +63,22 @@ export default function App() {
   };
 
   const handleResp = (idx) => {
+    if (respostaAtual !== null) return;
+
     const acertou = idx === perguntas[q].r;
-    if (acertou) setPts(pts + 20);
+    if (acertou) setPts(valorAtual => valorAtual + 20);
 
     setRespostasUsuario([...respostasUsuario, { escolha: idx, correta: perguntas[q].r }]);
+    setRespostaAtual(idx);
 
-    if (q + 1 < perguntas.length) {
-      setQ(q + 1);
-    } else {
-      setEtapa('fim');
-    }
+    setTimeout(() => {
+      setRespostaAtual(null);
+      if (q + 1 < perguntas.length) {
+        setQ(valorAtual => valorAtual + 1);
+      } else {
+        setEtapa('fim');
+      }
+    }, 800);
   };
 
   return (
@@ -104,7 +111,12 @@ export default function App() {
 
             <div className="grid">
               {perguntas[q].o.map((op, i) => (
-                <button key={i} onClick={() => handleResp(i)} className="botao">
+                <button
+                  key={i}
+                  onClick={() => handleResp(i)}
+                  className={`botao ${respostaAtual === perguntas[q].r && i === respostaAtual ? 'resposta-correta' : ''}`}
+                  disabled={respostaAtual !== null}
+                >
                   {op}
                 </button>
               ))}

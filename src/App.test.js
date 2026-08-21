@@ -1,8 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('destaca a resposta correta em verde', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+
+  const respostaCorreta = screen.getByRole('button', {
+    name: 'Bloqueio da liberação de acetilcolina na junção neuromuscular'
+  });
+  fireEvent.click(respostaCorreta);
+
+  expect(respostaCorreta).toHaveClass('resposta-correta');
 });

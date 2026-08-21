@@ -192,6 +192,30 @@ body {
   cursor: default;
 }
 
+.botao {
+  width: 100%;
+  padding: 16px 18px;
+  border: 2px solid var(--card-border);
+  border-radius: 12px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.botao:disabled {
+  cursor: default;
+}
+
+.botao.resposta-correta {
+  background: var(--correct-soft);
+  border-color: var(--correct);
+  color: var(--correct);
+  font-weight: 700;
+}
+
 .botao-primario {
   width: 100%;
   padding: 18px;
