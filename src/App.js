@@ -1,27 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-const EMOJIS = ['🎉', '🌟', '🔥', '💎', '🎯', '🚀', '🌈', '🍀'];
-const TOTAL_PAIRS = EMOJIS.length;
-
-function shuffle(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+// Banco de perguntas com imagens atualizadas e links seguros
+const perguntas = [
+  {
+    icone: '💉',
+    imagem: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80',
+    p: 'Qual é o principal mecanismo de ação da Toxina Botulínica tipo A?',
+    o: ['Preenchimento de rugas profundas', 'Bloqueio da liberação de acetilcolina na junção neuromuscular', 'Estimulação direta de fibroblastos e colágeno tipo III'],
+    r: 1,
+    explicacao: 'A toxina botulínica atua bloqueando a liberação de acetilcolina, impedindo temporariamente a contração muscular responsável pelas rugas dinâmicas.'
+  },
+  {
+    icone: '✨',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrksYGxSdaDJXodNWibrEguybl5MM0hsVepopaA0WHsFlxNWDLj5C59EIl&s=10',
+    p: 'Qual destes é considerado um bioestimulador de colágeno composto por Ácido Poli-L-Láctico?',
+    o: ['Sculptra', 'Radiesse', 'Ellansé'],
+    r: 0,
+    explicacao: 'O Sculptra é composto por Ácido Poli-L-Láctico (PLLA), que estimula gradualmente a produção de colágeno pelo próprio organismo.'
+  },
+  {
+    icone: '🎯',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4ohh4lpCiHkZlQHqr_aLNKCt8TBEVQXT12XLu_34zDdRGKbQKazcwB78&s=10',
+    p: 'Qual é a camada anatomofisiológica alvo preferencial para a aplicação profunda de bioestimuladores?',
+    o: ['Epiderme superficial', 'Hipoderme / Derme profunda', 'Músculo estriado esquelético'],
+    r: 1,
+    explicacao: 'A aplicação na hipoderme ou derme profunda garante a integração correta do produto e estimula o tecido conjuntivo de sustentação.'
+  },
+  {
+    icone: '⚠️',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMioLpc7hBNmLKu7XSdUWBFHPkgpFOg11tM44NtCmqe8gLr2QIroKQ1Ao&s=10',
+    p: 'Qual é o principal risco vascular anatômico ao realizar procedimentos de preenchimento na região glabelar?',
+    o: ['Hiperpigmentação melânica pós-inflamatória', 'Edema transitório autolimitado', 'Oclusão vascular da Artéria Supra-troclear / Supra-orbitária'],
+    r: 2,
+    explicacao: 'A região glabelar possui uma rede vascular complexa; a oclusão da artéria supra-troclear é uma complicação grave que exige protocolo imediato de reversão.'
+  },
+  {
+    icone: '💧',
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDJCkWsZ50v1gu-ITa3eTgcd5efDeo9wM6ILbBvVLNutPB3d183_LpjAzf&s=10',
+    p: 'Qual é a principal finalidade do Ácido Hialurônico de alta reticulação (high cross-linking)?',
+    o: ['Hidratação superficial de derme papilar', 'Volumização, reestruturação e sustentação profunda', 'Despigmentação de manchas melanodérmicas'],
+    r: 1,
+    explicacao: 'Ácidos hialurônicos altamente reticulados possuem maior coesividade e resistência, sendo indicados para estruturação de marcos faciais e volumização.'
   }
-  return arr;
-}
+];
 
 export default function App() {
-  const [cartas, setCartas] = useState(() => {
-    const pares = [...EMOJIS, ...EMOJIS];
-    return shuffle(pares).map((emoji, id) => ({ id, emoji, virada: false, combinada: false }));
-  });
-  const [selecionadas, setSelecionadas] = useState([]);
-  const [movimentos, setMovimentos] = useState(0);
-  const [bloqueado, setBloqueado] = useState(false);
-  const [venceu, setVenceu] = useState(false);
+  const [q, setQ] = useState(0);
+  const [pts, setPts] = useState(0);
+  const [respostasUsuario, setRespostasUsuario] = useState([]);
+  const [etapa, setEtapa] = useState('quiz'); // 'quiz', 'fim', ou 'gabarito'
   const [tema, setTema] = useState(localStorage.getItem('tema') || 'light');
 
   useEffect(() => {
@@ -29,87 +57,108 @@ export default function App() {
     localStorage.setItem('tema', tema);
   }, [tema]);
 
-  const alternarTema = () => setTema(tema === 'light' ? 'dark' : 'light');
-
-  useEffect(() => {
-    if (selecionadas.length === 2) {
-      setBloqueado(true);
-      const [a, b] = selecionadas;
-      if (cartas[a].emoji === cartas[b].emoji) {
-        setCartas(prev =>
-          prev.map(c => (c.id === cartas[a].id || c.id === cartas[b].id ? { ...c, combinada: true } : c))
-        );
-        setSelecionadas([]);
-        setBloqueado(false);
-      } else {
-        setTimeout(() => {
-          setCartas(prev =>
-            prev.map(c => (c.id === cartas[a].id || c.id === cartas[b].id ? { ...c, virada: false } : c))
-          );
-          setSelecionadas([]);
-          setBloqueado(false);
-        }, 900);
-      }
-    }
-  }, [selecionadas, cartas]);
-
-  useEffect(() => {
-    if (cartas.length > 0 && cartas.every(c => c.combinada)) {
-      setVenceu(true);
-    }
-  }, [cartas]);
-
-  const handleClick = (index) => {
-    if (bloqueado) return;
-    if (cartas[index].virada || cartas[index].combinada) return;
-    if (selecionadas.length === 2) return;
-
-    setCartas(prev => prev.map((c, i) => (i === index ? { ...c, virada: true } : c)));
-    setSelecionadas(prev => [...prev, index]);
-    setMovimentos(m => m + 1);
+  const alternarTema = () => {
+    setTema(tema === 'light' ? 'dark' : 'light');
   };
 
-  const reiniciar = () => {
-    const pares = [...EMOJIS, ...EMOJIS];
-    setCartas(shuffle(pares).map((emoji, id) => ({ id, emoji, virada: false, combinada: false })));
-    setSelecionadas([]);
-    setMovimentos(0);
-    setVenceu(false);
-    setBloqueado(false);
+  const handleResp = (idx) => {
+    const acertou = idx === perguntas[q].r;
+    if (acertou) setPts(pts + 20);
+
+    setRespostasUsuario([...respostasUsuario, { escolha: idx, correta: perguntas[q].r }]);
+
+    if (q + 1 < perguntas.length) {
+      setQ(q + 1);
+    } else {
+      setEtapa('fim');
+    }
   };
 
   return (
     <div className="page-container">
-      <button className="theme-toggle" onClick={alternarTema} aria-label="Alternar tema" title={tema === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}>
+      <button
+        className="theme-toggle"
+        onClick={alternarTema}
+        aria-label="Alternar tema"
+        title={tema === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
+      >
         {tema === 'light' ? '🌙' : '☀️'}
       </button>
 
       <div className="glass-card">
-        {!venceu ? (
+
+        {/* Etapa do Quiz */}
+        {etapa === 'quiz' && (
           <div>
-            <h1 className="titulo">Jogo da Memória</h1>
-            <p className="subtitulo">Movimentos: <strong>{movimentos}</strong></p>
-            <div className="grid-memoria">
-              {cartas.map((carta, i) => (
-                <button
-                  key={carta.id}
-                  onClick={() => handleClick(i)}
-                  className={`carta ${carta.virada || carta.combinada ? 'virada' : ''} ${carta.combinada ? 'combinada' : ''}`}
-                  disabled={carta.combinada}
-                >
-                  <span className="carta-frente">{carta.emoji}</span>
-                  <span className="carta-verso">?</span>
+            <div className="header-quiz">
+              <span className="badge">Questão {q + 1} de {perguntas.length}</span>
+              <span className="icone-header">{perguntas[q].icone}</span>
+            </div>
+
+            <div className="image-container">
+              <img src={perguntas[q].imagem} alt="Ilustração estética" className="imagem-quiz" />
+            </div>
+
+            <h1 className="titulo">Estética Master Quiz</h1>
+            <p className="pergunta-texto">{perguntas[q].p}</p>
+
+            <div className="grid">
+              {perguntas[q].o.map((op, i) => (
+                <button key={i} onClick={() => handleResp(i)} className="botao">
+                  {op}
                 </button>
               ))}
             </div>
           </div>
-        ) : (
+        )}
+
+        {/* Etapa de Fim de Jogo */}
+        {etapa === 'fim' && (
           <div style={{ textAlign: 'center' }}>
-            <h1 className="titulo">🎉 Parabéns!</h1>
-            <p className="subtitulo">Você completou o jogo em <strong>{movimentos}</strong> movimentos!</p>
-            <button onClick={reiniciar} className="botao-primario">Jogar Novamente 🔄</button>
+            <h1 className="titulo">🏆 Quiz Concluído!</h1>
+            <p className="subtitulo">Sua pontuação: <strong>{pts} / 100 XP</strong></p>
+            <p style={{ color: 'var(--muted)', fontSize: '20px', marginBottom: '30px', fontWeight: '500' }}>
+              {pts >= 80 ? '✨ Excelente domínio técnico!' : '💡 Bom desempenho! Confira o gabarito detalhado abaixo para aprimorar seus conhecimentos.'}
+            </p>
+            <button onClick={() => setEtapa('gabarito')} className="botao-primario">
+              Ver Gabarito Explicado 📖
+            </button>
           </div>
         )}
+
+        {/* Etapa de Gabarito */}
+        {etapa === 'gabarito' && (
+          <div>
+            <h1 className="titulo">Gabarito & Explicações</h1>
+            <div className="container-gabarito">
+              {perguntas.map((item, index) => {
+                const acertou = respostasUsuario[index]?.escolha === item.r;
+                return (
+                  <div key={index} className="card-gabarito">
+                    <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: 'var(--title-color)', fontSize: '18px' }}>
+                      {item.icone} {index + 1}. {item.p}
+                    </p>
+                    <p style={{ margin: '4px 0', fontSize: '17px', color: acertou ? 'var(--correct)' : 'var(--wrong)' }}>
+                      <strong>Sua resposta:</strong> {item.o[respostasUsuario[index]?.escolha]} {acertou ? '✓' : '✗'}
+                    </p>
+                    {!acertou && (
+                      <p style={{ margin: '4px 0', fontSize: '17px', color: 'var(--correct)' }}>
+                        <strong>Resposta correta:</strong> {item.o[item.r]}
+                      </p>
+                    )}
+                    <p style={{ margin: '10px 0 0 0', fontSize: '16px', color: 'var(--muted-alt)', fontStyle: 'italic', background: 'var(--explic-bg)', padding: '10px', borderRadius: '8px' }}>
+                      <strong>Explicação:</strong> {item.explicacao}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <button onClick={() => window.location.reload()} className="botao-primario">
+              Reiniciar Desafio 🔄
+            </button>
+          </div>
+        )}
+
       </div>
     </div>
   );
