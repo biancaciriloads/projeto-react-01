@@ -1,0 +1,370 @@
+/* ================= Layout geral do jogo ================= */
+.game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, var(--bg-color) 0%, #ded0b0 140%);
+}
+
+.controles-ajuda {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--muted);
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  z-index: 5;
+}
+
+/* ================= Mapa isométrico ================= */
+.iso-map-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.iso-map-world {
+  position: relative;
+  width: 1400px;
+  height: 900px;
+}
+
+.iso-tile {
+  position: absolute;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.clinica-placa {
+  position: absolute;
+  transform: translate(-50%, -140%);
+  background: var(--carta-verso);
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  z-index: 3;
+}
+
+.sala-label {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--title-color);
+  background: var(--card-bg);
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ================= Personagem (sprite pixel-art original em CSS) ================= */
+.personagem-wrapper,
+.npc-wrapper {
+  position: absolute;
+  z-index: 4;
+  width: 0;
+  height: 0;
+}
+
+.personagem-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.personagem-sprite {
+  position: relative;
+  width: 28px;
+  height: 46px;
+  transform: translate(-14px, -40px);
+  image-rendering: pixelated;
+}
+
+.personagem-preview .personagem-sprite {
+  transform: none;
+  transform-origin: center;
+  zoom: 2.4;
+}
+
+.parte {
+  position: absolute;
+  left: 50%;
+}
+
+.parte.chapeu {
+  width: 22px;
+  height: 8px;
+  top: -6px;
+  transform: translateX(-50%);
+  border-radius: 4px 4px 0 0;
+}
+
+.parte.cabelo {
+  width: 16px;
+  height: 8px;
+  top: 0px;
+  transform: translateX(-50%);
+  border-radius: 4px 4px 0 0;
+}
+
+.parte.cabeca {
+  width: 14px;
+  height: 12px;
+  top: 4px;
+  transform: translateX(-50%);
+  border-radius: 4px;
+}
+
+.parte.oculos {
+  width: 12px;
+  height: 3px;
+  top: 9px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  opacity: 0.85;
+}
+
+.parte.torso {
+  width: 18px;
+  height: 14px;
+  top: 16px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+}
+
+.parte.pulseira {
+  width: 4px;
+  height: 4px;
+  top: 24px;
+  left: 68%;
+  border-radius: 50%;
+}
+
+.parte.pernas {
+  width: 16px;
+  height: 10px;
+  top: 30px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.parte.pes {
+  width: 18px;
+  height: 5px;
+  top: 40px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.personagem-sombra {
+  position: absolute;
+  width: 20px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  transform: translate(-10px, 2px);
+  filter: blur(1px);
+}
+
+.npc-sprite {
+  transform: translate(-14px, -40px);
+}
+
+.npc-nome {
+  position: absolute;
+  transform: translate(-50%, 6px);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--title-color);
+  white-space: nowrap;
+  background: var(--card-bg);
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.npc-prompt {
+  position: absolute;
+  transform: translate(-50%, -56px);
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  animation: flutuar 1.2s ease-in-out infinite;
+  z-index: 6;
+}
+
+@keyframes flutuar {
+  0%, 100% { transform: translate(-50%, -56px); }
+  50% { transform: translate(-50%, -62px); }
+}
+
+/* ================= HUD ================= */
+.hud {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.hud-item {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--title-color);
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px var(--card-shadow);
+  font-size: 14px;
+}
+
+/* ================= Modal (Diálogo / Quiz / Loja / Inventário) ================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 15, 5, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.modal-painel {
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.modal-titulo {
+  margin: 0;
+  text-align: left;
+}
+
+.modal-fechar {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+/* ================= Loja / Inventário ================= */
+.loja-abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.loja-aba {
+  border: 1px solid var(--card-border);
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.loja-aba.ativa {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.loja-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.loja-item-card {
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  background: var(--btn-bg);
+}
+
+.loja-item-card.bloqueado {
+  opacity: 0.55;
+}
+
+.loja-item-swatch {
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.loja-item-nome {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0 2px;
+  color: var(--text-color);
+}
+
+.loja-item-preco {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.loja-item-btn {
+  font-size: 12px;
+  padding: 8px;
+  text-align: center;
+}
+
+.inventario-layout {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 20px;
+}
+
+.inventario-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--explic-bg);
+  border-radius: 14px;
+  min-height: 200px;
+}
+
+@media (max-width: 700px) {
+  .inventario-layout {
+    grid-template-columns: 1fr;
+  }
+}

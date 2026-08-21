@@ -1,13 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('destaca a resposta correta em verde', () => {
+// A aplicação agora é o minigame isométrico; o teste antigo verificava
+// o quiz tradicional na tela inicial, que não existe mais nesse formato.
+// Mantemos um smoke test garantindo que o jogo monta sem erros.
+test('renderiza o jogo sem erros e mostra a dica de controles', () => {
   render(<App />);
-
-  const respostaCorreta = screen.getByRole('button', {
-    name: 'Bloqueio da liberação de acetilcolina na junção neuromuscular'
-  });
-  fireEvent.click(respostaCorreta);
-
-  expect(respostaCorreta).toHaveClass('resposta-correta');
+  expect(screen.getByText(/Mova-se com WASD ou setas/i)).toBeInTheDocument();
 });
