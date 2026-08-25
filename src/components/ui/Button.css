@@ -1,0 +1,33 @@
+.pixel-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text-on-accent);
+  background: var(--color-accent);
+  border: 2px solid var(--color-accent-dark);
+  border-radius: 6px;
+  box-shadow: 0 4px 0 var(--color-accent-dark);
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.pixel-button:hover {
+  filter: brightness(1.06);
+}
+
+.pixel-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--color-accent-dark);
+}
+
+.pixel-button--secondary {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  box-shadow: 0 4px 0 var(--color-border);
+}
