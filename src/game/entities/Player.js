@@ -50,7 +50,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.invincibleUntil = 0;  // timestamp até o qual o player é invencível
     this.knockbackTimer = 0;   // ms restantes de knockback
 
+    this.weapon = null; // arma equipada
     this.play('player-idle-anim');
+  }
+
+  setWeapon(weapon) {
+    this.weapon = weapon;
   }
 
   /**
@@ -95,6 +100,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     } else {
       this.handleHorizontalMovement();
       this.handleJump();
+      this.handleAttack(time);
     }
 
     // --- Pulo variável ---
@@ -141,6 +147,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.isJumping = true;
       this.coyoteTimer = 0;
       this.jumpBufferTimer = 0;
+    }
+  }
+
+  handleAttack(time) {
+    if (this.weapon && this.controls.isAttackJustDown()) {
+      const dirX = this.flipX ? -1 : 1;
+      this.weapon.fire(time, this.x, this.y, dirX, 0);
     }
   }
 

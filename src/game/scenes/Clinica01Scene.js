@@ -11,6 +11,7 @@ import Door from '../entities/Door';
 import Checkpoint from '../entities/Checkpoint';
 import { createEnemy } from '../systems/EnemyFactory';
 import ProjectilePool from '../systems/ProjectilePool';
+import { createWeapon } from '../systems/WeaponFactory';
 import CombatSystem from '../systems/CombatSystem';
 import InteractionSystem from '../systems/InteractionSystem';
 import { gameEventBus } from '../events/GameEventBus';
@@ -63,6 +64,10 @@ export default class Clinica01Scene extends Phaser.Scene {
     
     // Combat system (precisa dos grupos prontos)
     this.combatSystem = new CombatSystem(this, this.player, this.enemyGroup, this.projectilePool, this.enemyProjectilePool);
+
+    // Dar uma arma inicial ao jogador
+    this.playerWeapon = createWeapon(this, this.player, 'microagulhamento', this.projectilePool, this.enemyGroup);
+    this.player.setWeapon(this.playerWeapon);
     
     // Trigger de fim (mantido do original)
     this.buildEndTrigger(level.endTrigger, level.key);
