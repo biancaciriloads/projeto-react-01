@@ -47,9 +47,9 @@ export default class Coin extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  _onCollect(player, coin) {
+  _onCollect(coin, player) {
     coin.scene.events.emit('player:collect-coin');
-    // Efeito visual:得快
+    // Efeito visual:
     coin.scene.tweens.add({
       targets: coin,
       alpha: 0,

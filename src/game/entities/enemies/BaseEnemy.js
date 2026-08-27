@@ -30,6 +30,10 @@ export default class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
     this.setDepth(DEPTH.ENEMY);
 
+    // Ajusta o corpo físico para corresponder ao sprite placeholder do player
+    this.body.setSize(14, 28);
+    this.body.setOffset(9, 4);
+
     this.maxHp = stats.hp;
     this.hp = stats.hp;
     this.speed = stats.speed;

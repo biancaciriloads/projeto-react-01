@@ -65,7 +65,7 @@ export default class CombatSystem {
     this.playerPool.release(projectile);
   }
 
-  _onEnemyProjectileHitPlayer(projectile, player) {
+  _onEnemyProjectileHitPlayer(player, projectile) {
     if (!projectile.active) return;
     player.takeDamage(projectile.damage, projectile.x);
     this.enemyPool.release(projectile);
