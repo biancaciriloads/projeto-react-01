@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import BaseWeapon from './BaseWeapon';
 import { DEPTH } from '../../../constants/gameSettings';
 
