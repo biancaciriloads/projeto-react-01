@@ -43,9 +43,13 @@ export const UI_IMAGES = [
   { key: 'ui-pixel-transparent', path: `${BASE}/ui/pixel/spritesheet/uipack-transparent.png` },
 ];
 
+export const COLLECTIBLE_SPRITESHEETS = [
+  { key: 'coin', path: `${BASE}/collectibles/coin.png`, frameWidth: 16, frameHeight: 16 },
+];
+
 export function getAllManifestEntries() {
   return {
-    spritesheets: [...PLAYER_SPRITESHEETS, ...TILESET_SPRITESHEETS],
+    spritesheets: [...PLAYER_SPRITESHEETS, ...TILESET_SPRITESHEETS, ...COLLECTIBLE_SPRITESHEETS],
     images: [...PROP_IMAGES, ...UI_IMAGES],
   };
 }
