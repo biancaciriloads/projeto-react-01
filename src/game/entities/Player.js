@@ -197,6 +197,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   // API exposta para a Scene (ex.: recebe Interact JustDown)
   isInteractJustDown() {
-    return this.input.isInteractJustDown();
+    return this.controls.isInteractJustDown();
   }
 }
