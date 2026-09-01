@@ -46,10 +46,10 @@ export const clinica01Level = {
   // Plataformas flutuantes soltas ao longo do corredor.
   platforms: [
     { tileFrame: 341, y: FLOOR_Y - 64, startX: 420, widthInTiles: 4 },
-    { tileFrame: 341, y: FLOOR_Y - 100, startX: 620, widthInTiles: 3 },
-    { tileFrame: 341, y: FLOOR_Y - 64, startX: 820, widthInTiles: 4 },
-    { tileFrame: 341, y: FLOOR_Y - 80, startX: 1400, widthInTiles: 5 },
-    { tileFrame: 341, y: FLOOR_Y - 64, startX: 1900, widthInTiles: 4 },
+    { tileFrame: 341, y: FLOOR_Y - 100, startX: 540, widthInTiles: 3 },
+    { tileFrame: 341, y: FLOOR_Y - 64, startX: 660, widthInTiles: 4 },
+    { tileFrame: 341, y: FLOOR_Y - 80, startX: 780, widthInTiles: 5 },
+    { tileFrame: 341, y: FLOOR_Y - 64, startX: 920, widthInTiles: 4 },
   ],
 
   // Props decorativos/obstáculos estáticos (recepção, móveis, plantas).
@@ -78,50 +78,5 @@ export const clinica01Level = {
     { key: 'prop-armchair', x: WORLD_WIDTH - 110, y: FLOOR_Y, solid: true },
   ],
 
-  // Moedas espalhadas pelo corredor
-  coins: [
-    { x: 200, y: FLOOR_Y - 20 },
-    { x: 320, y: FLOOR_Y - 20 },
-    { x: 450, y: FLOOR_Y - 80 }, // cima da plataforma
-    { x: 640, y: FLOOR_Y - 116 }, // plataforma alta
-    { x: 850, y: FLOOR_Y - 80 },
-    { x: 1100, y: FLOOR_Y - 20 },
-    { x: 1430, y: FLOOR_Y - 96 }, // plataforma
-    { x: 1700, y: FLOOR_Y - 20 },
-    { x: 2400, y: FLOOR_Y - 20 },
-    { x: 2700, y: FLOOR_Y - 20 },
-  ],
 
-  // Baús
-  chests: [
-    { x: 550, y: FLOOR_Y },
-    { x: 2000, y: FLOOR_Y },
-  ],
-
-  // Chave (escondida mais no final do corredor)
-  keyItem: { x: 2500, y: FLOOR_Y - 20 },
-
-  // Porta final
-  door: { x: WORLD_WIDTH - 50, y: FLOOR_Y },
-
-  // Checkpoints ao longo do corredor
-  checkpoints: [
-    { x: 700, y: FLOOR_Y },
-    { x: 1600, y: FLOOR_Y },
-  ],
-
-  // Inimigos
-  enemies: [
-    { type: 'sol-uv', x: 400, y: FLOOR_Y - 40 },
-    { type: 'bacteria', x: 650, y: FLOOR_Y - 40 },
-    { type: 'bacteria', x: 750, y: FLOOR_Y - 40 },
-    { type: 'sol-uv', x: 900, y: FLOOR_Y - 40 },
-    { type: 'oleosidade', x: 1150, y: FLOOR_Y - 40 },
-    { type: 'bacteria', x: 1300, y: FLOOR_Y - 40 },
-    { type: 'sol-uv', x: 1500, y: FLOOR_Y - 40 },
-    { type: 'oleosidade', x: 1800, y: FLOOR_Y - 40 },
-    { type: 'bacteria', x: 2100, y: FLOOR_Y - 40 },
-    { type: 'sol-uv', x: 2600, y: FLOOR_Y - 40 },
-    { type: 'oleosidade', x: 2800, y: FLOOR_Y - 40 },
-  ],
 };

@@ -24,7 +24,6 @@ export default class InputController {
 
     this.interact = scene.input.keyboard.addKeys({
       interact: 'X',
-      attack: 'Z'
     });
   }
 
@@ -54,7 +53,4 @@ export default class InputController {
     return Phaser.Input.Keyboard.JustDown(this.interact.interact);
   }
 
-  isAttackJustDown() {
-    return Phaser.Input.Keyboard.JustDown(this.interact.attack);
-  }
 }

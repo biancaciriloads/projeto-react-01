@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { DEPTH } from '../../constants/gameSettings';
 
 /**
  * InteractionSystem
@@ -49,6 +48,7 @@ export default class InteractionSystem {
   register(id, x, y, size, type, label = 'PRESSIONE X') {
     const zone = this.scene.add.zone(x, y, size.width, size.height);
     this.scene.physics.add.existing(zone, true); // true = static body
+    this.zoneGroup.add(zone);
     zone.setOrigin(0.5, 1);
     
     this.interactables.set(id, { zone, data: null, type, label });

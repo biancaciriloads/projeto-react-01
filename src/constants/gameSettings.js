@@ -22,7 +22,7 @@ export const PHYSICS = {
   AIR_ACCELERATION: 400,      // controle no ar (menor que no chão)
   AIR_DRAG: 100,              // menos arrasto no ar = mais controle
   // Pulo
-  PLAYER_JUMP_VELOCITY: 320,  // velocidade inicial do pulo
+  PLAYER_JUMP_VELOCITY: 440,  // velocidade inicial do pulo
   MAX_FALL_SPEED: 600,        // velocidade máxima de queda
   // Pulo variável: gravidade extra aplicada quando solta o botão de pulo
   VARIABLE_JUMP_MULTIPLIER: 2.5,
@@ -43,14 +43,10 @@ export const CAMERA = {
 // Profundidades (z-index) padronizadas para organizar camadas de render.
 export const DEPTH = {
   BACKGROUND: 0,
-  COIN: 8,
-  KEY: 8,
   PROPS_BACK: 5,
   PLATFORMS: 10,
   PROPS_FRONT: 15,
   PLAYER: 20,
-  ENEMY: 21,
-  PROJECTILE: 22,
   FOREGROUND: 30,
   HUD: 100,
 };

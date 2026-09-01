@@ -7,7 +7,7 @@ import './GameScreen.css';
 /**
  * GameScreen
  *
- * Envolve o GameCanvas e renderiza o HUD (overlay React) 
+ * Envolve o GameCanvas e renderiza o HUD (overlay React)
  * por cima da tela do jogo.
  */
 export default function GameScreen() {
