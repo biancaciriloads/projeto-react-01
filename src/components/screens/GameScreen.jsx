@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import GameCanvas from '../game/GameCanvas';
+import Map from '../Map';
 import HudRoot from '../ui/HUD/HudRoot';
 import './GameScreen.css';
 
@@ -20,7 +20,7 @@ export default function GameScreen() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <GameCanvas />
+      <Map />
       <HudRoot />
     </motion.div>
   );

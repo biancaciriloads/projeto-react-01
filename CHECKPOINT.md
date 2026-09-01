@@ -14,3 +14,8 @@
 - Criada com suporte a controle de grid do Player `{x, y}`, direção, salas ativas, trava/destrava de portas, modais de diálogo, quiz e emissão de certificado final.
 ---
 **Próximo Passo (Fase 2):**
+### 4. Etapa 2.2: Componentes Visuais do Mapa, Câmera e Checkpoint
+- Renderização do mapa contínuo a partir da matriz de tiles concluída.
+- Exibição dos NPCs no Grid operando.
+- Sistema de colisão com paredes (Tile 1) e validação em tempo real de portas trancadas/destrancadas via Zustand (Tile 2).
+- Câmera estilo Gather.town operacional: viewport centralizado no Player utilizando transição suave com `transform: translate3d`.
