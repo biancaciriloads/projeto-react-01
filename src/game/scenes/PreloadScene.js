@@ -7,8 +7,10 @@ import { gameEventBus } from '../events/GameEventBus';
  * PreloadScene
  *
  * Carrega todos os assets registrados em `assetManifest.js` e reporta o
- * progresso ao React através do GameEventBus (a LoadingScreen escuta
+ * progresso ao React atraves do GameEventBus (a LoadingScreen escuta
  * 'preload:progress' para animar a barra de carregamento).
+ *
+ * Apos o carregamento inicia a ClinicaTDScene (top-down / Gather.town).
  */
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
@@ -33,6 +35,7 @@ export default class PreloadScene extends Phaser.Scene {
 
   create() {
     gameEventBus.emit('preload:complete');
-    this.scene.start(SCENE_KEYS.CLINICA_01);
+    // Inicia a cena top-down (Gather.town) como cena principal
+    this.scene.start(SCENE_KEYS.CLINICA_TD);
   }
 }

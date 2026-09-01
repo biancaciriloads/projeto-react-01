@@ -18,6 +18,9 @@ export default class Clinica01Scene extends Phaser.Scene {
   create() {
     const level = clinica01Level;
 
+    // Redefine gravidade localmente para cena side-scroller
+    this.physics.world.gravity.y = 900;
+
     createAllAnimations(this);
     this.physics.world.setBounds(0, 0, level.world.width, level.world.height);
     this.solidGroup = this.physics.add.staticGroup();

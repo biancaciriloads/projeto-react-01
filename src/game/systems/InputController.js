@@ -7,9 +7,7 @@ import Phaser from 'phaser';
  * entidades) não dependam diretamente da API de input do Phaser.
  * Suporta setas do teclado e WASD simultaneamente.
  *
- * Para pulo fluido, expõe tanto o "just down" (apertou) quanto o
- * "held" (segurando) — necessários para Coyote Time, Jump Buffer e
- * pulo variável (segurar = pula mais alto).
+ * Suporta tanto side-scroller (jump/fall) quanto top-down (4 direções).
  */
 export default class InputController {
   constructor(scene) {
@@ -33,6 +31,16 @@ export default class InputController {
 
   isRightDown() {
     return this.cursors.right.isDown || this.wasd.right.isDown;
+  }
+
+  /** Top-down: movimento para cima (W ou seta cima). */
+  isUpDown() {
+    return this.cursors.up.isDown || this.wasd.up.isDown;
+  }
+
+  /** Top-down: movimento para baixo (S ou seta baixo). */
+  isDownDown() {
+    return this.cursors.down.isDown || this.wasd.down.isDown;
   }
 
   isJumpJustDown() {

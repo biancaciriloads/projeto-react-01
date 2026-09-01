@@ -1,33 +1,20 @@
 import { create } from 'zustand';
 
-/**
- * useGameStore
- *
- * Estado de gameplay: cena atual, checkpoints, entidades interativas
- * próximas, prompt "PRESSIONE X" e flags de fim de fase. Mantido
- * separado do PlayerStore para que a UI/HUD não precise re-renderizar
- * quando o gameplay muda.
- */
 export const useGameStore = create((set) => ({
-  currentLevel: null,
-  currentCheckpoint: { x: 0, y: 0 },
-  nearbyInteractable: null, // { type, label } | null
-  levelComplete: false,
-
-  setLevel: (levelKey, spawn) =>
-    set({ currentLevel: levelKey, currentCheckpoint: spawn, levelComplete: false }),
-
-  setCheckpoint: (x, y) => set({ currentCheckpoint: { x, y } }),
-
-  setNearby: (interactable) => set({ nearbyInteractable: interactable }),
-
-  markLevelComplete: () => set({ levelComplete: true }),
-
-  reset: () =>
-    set({
-      currentLevel: null,
-      currentCheckpoint: { x: 0, y: 0 },
-      nearbyInteractable: null,
-      levelComplete: false,
-    }),
+  player: { x: 4, y: 6, direction: 'down', isMoving: false, sprite: '/assets/sprites/player.png' },
+  setPlayerPosition: (x, y, direction) => set((state) => ({ player: { ...state.player, x, y, direction: direction || state.player.direction } })),
+  setPlayerDirection: (direction) => set((state) => ({ player: { ...state.player, direction } })),
+  currentRoom: 'recepcao',
+  setCurrentRoom: (room) => set({ currentRoom: room }),
+  doors: { door_corridor: true, door_room1: false, door_room2: false, door_room3: false, door_room4: false, door_room5: false },
+  unlockDoor: (doorKey) => set((state) => ({ doors: { ...state.doors, [doorKey]: true } })),
+  activeDialogue: null,
+  setActiveDialogue: (dialogue) => set({ activeDialogue: dialogue }),
+  clearDialogue: () => set({ activeDialogue: null }),
+  activeQuiz: null,
+  setActiveQuiz: (quiz) => set({ activeQuiz: quiz }),
+  clearQuiz: () => set({ activeQuiz: null }),
+  gameCompleted: false,
+  certificateData: null,
+  setGameCompleted: (certificateData) => set({ gameCompleted: true, certificateData }),
 }));
