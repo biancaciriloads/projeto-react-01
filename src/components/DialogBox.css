@@ -1,0 +1,185 @@
+/* ==========================================
+   DIALOGBOX.CSS — Estilo RPG GBA
+   CSS Puro (image-rendering: pixelated)
+   ========================================== */
+
+/* Overlay escurece o mapa sem ocultar */
+.dialogbox-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.38);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 18px;
+  pointer-events: all;
+}
+
+/* Caixa principal — fixada na parte inferior */
+.dialogbox {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: min(740px, 97vw);
+  min-height: 148px;
+  background: #0a0c14;
+  border: 3px solid #5c6bc0;
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px #1a1f3c,
+    inset 0 0 0 1px rgba(92, 107, 192, 0.2),
+    0 -4px 32px rgba(0, 0, 0, 0.7);
+  /* GBA: sem blur, sem gradiente complexo — pixelado e limpo */
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+/* ── Portraits (esquerdo e direito) ── */
+.dialogbox-portrait {
+  flex-shrink: 0;
+  width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  background: #060810;
+  border-right: 2px solid #1a1f3c;
+  padding-bottom: 8px;
+  gap: 4px;
+}
+
+.dialogbox-portrait--player {
+  border-right: none;
+  border-left: 2px solid #1a1f3c;
+}
+
+.dialogbox-portrait-img {
+  width: 96px;
+  height: 106px;
+  object-fit: cover;
+  object-position: center top;
+  /* NÃO usar pixelated aqui — são fotos reais dos NPCs */
+  image-rendering: auto;
+  border: 1px solid #1a1f3c;
+  display: block;
+}
+
+.dialogbox-portrait-fallback {
+  width: 96px;
+  height: 106px;
+  background: #1a1f3c;
+  border: 1px solid #2a2f5c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+  font-size: 26px;
+  font-weight: bold;
+  color: #5c6bc0;
+  letter-spacing: 2px;
+}
+
+.dialogbox-portrait-label {
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+/* ── Corpo central de texto ── */
+.dialogbox-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 18px 12px;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dialogbox-speaker {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  color: #7986cb;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  /* Linha decorativa abaixo */
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(92, 107, 192, 0.3);
+}
+
+.dialogbox-text {
+  flex: 1;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #dde4f0;
+  /* Semelhante ao GBA: sem anti-aliasing exagerado */
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* ── Rodapé com progresso e botão ── */
+.dialogbox-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(92, 107, 192, 0.2);
+  flex-wrap: wrap;
+}
+
+.dialogbox-progress {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: rgba(121, 134, 203, 0.55);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.dialogbox-btn {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #0a0c14;
+  background: #5c6bc0;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background 0.12s, transform 0.08s;
+  image-rendering: pixelated;
+}
+
+.dialogbox-btn:hover {
+  background: #7986cb;
+  transform: translateY(-1px);
+}
+
+.dialogbox-btn:active {
+  background: #3f51b5;
+  transform: translateY(0);
+}
+
+.dialogbox-hint {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.22);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  /* Pisca suavemente */
+  animation: hint-blink 1.4s ease-in-out infinite;
+}
+
+@keyframes hint-blink {
+  0%, 100% { opacity: 0.22; }
+  50%       { opacity: 0.6;  }
+}

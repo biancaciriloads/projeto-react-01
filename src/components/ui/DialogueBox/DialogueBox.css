@@ -1,0 +1,143 @@
+/* ===========================
+   DIALOGUE BOX — Estilo RPG
+   =========================== */
+
+.dialogue-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  /* Fundo semi-transparente escurece o mapa sem bloquear a visão */
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 24px;
+  pointer-events: all;
+  animation: overlay-in 0.2s ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Caixa principal */
+.dialogue-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: min(720px, 95vw);
+  min-height: 140px;
+  background: linear-gradient(
+    135deg,
+    rgba(10, 12, 20, 0.97) 0%,
+    rgba(20, 24, 45, 0.97) 100%
+  );
+  border: 2px solid #7b61ff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow:
+    0 0 0 1px rgba(123, 97, 255, 0.3),
+    0 8px 40px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  font-family: 'Courier New', Courier, monospace;
+  animation: box-slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes box-slide-in {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Retrato do NPC */
+.dialogue-portrait-wrap {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: 8px;
+  border: 2px solid #7b61ff;
+  overflow: hidden;
+  background: rgba(123, 97, 255, 0.1);
+  box-shadow: 0 0 16px rgba(123, 97, 255, 0.4);
+}
+
+.dialogue-portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  image-rendering: auto;
+}
+
+.dialogue-portrait-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #7b61ff;
+  background: rgba(123, 97, 255, 0.15);
+  letter-spacing: 2px;
+}
+
+/* Área de texto */
+.dialogue-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 88px;
+}
+
+.dialogue-speaker {
+  font-size: 13px;
+  font-weight: bold;
+  color: #a78bfa;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px rgba(167, 139, 250, 0.6);
+}
+
+.dialogue-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #e2e8f0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  /* Efeito de "digitação" via animation */
+  animation: text-appear 0.3s ease;
+}
+
+@keyframes text-appear {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Rodapé com progresso e hint */
+.dialogue-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid rgba(123, 97, 255, 0.2);
+}
+
+.dialogue-progress {
+  font-size: 10px;
+  color: rgba(167, 139, 250, 0.5);
+  letter-spacing: 1px;
+}
+
+.dialogue-hint {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}

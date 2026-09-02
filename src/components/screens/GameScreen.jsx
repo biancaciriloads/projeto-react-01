@@ -2,13 +2,18 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Map from '../Map';
 import HudRoot from '../ui/HUD/HudRoot';
+import DialogBox from '../DialogBox';
+import QuizModal from '../QuizModal';
 import './GameScreen.css';
 
 /**
- * GameScreen
+ * GameScreen — Tela principal de jogo (Etapa 2.3)
  *
- * Envolve o GameCanvas e renderiza o HUD (overlay React)
- * por cima da tela do jogo.
+ * Camadas (z-index crescente):
+ *   1. Map          — grid de tiles + player + NPCs
+ *   2. HudRoot      — HP bar e InteractionPrompt
+ *   3. DialogBox    — caixa de diálogo GBA (z-index: 200)
+ *   4. QuizModal    — modal de quiz     (z-index: 300)
  */
 export default function GameScreen() {
   return (
@@ -22,6 +27,8 @@ export default function GameScreen() {
     >
       <Map />
       <HudRoot />
+      <DialogBox />
+      <QuizModal />
     </motion.div>
   );
 }
