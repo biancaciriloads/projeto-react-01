@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from '../../constants/gameSettings';
 import BootScene from '../scenes/BootScene';
 import PreloadScene from '../scenes/PreloadScene';
-import Clinica01Scene from '../scenes/Clinica01Scene';
 import ClinicaTDScene from '../scenes/ClinicaTDScene';
 
 /**
@@ -34,6 +33,6 @@ export function createPhaserConfig(parent) {
         debug: false,
       },
     },
-    scene: [BootScene, PreloadScene, ClinicaTDScene, Clinica01Scene],
+    scene: [BootScene, PreloadScene, ClinicaTDScene],
   };
 }

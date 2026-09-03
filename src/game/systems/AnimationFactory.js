@@ -9,38 +9,6 @@
  * - td-walk-down / td-walk-up / td-walk-left / td-walk-right
  */
 
-// ---- Side-scroller (mantido para retrocompatibilidade) ----
-export function createPlayerAnimations(scene) {
-  const { anims } = scene;
-
-  if (!anims.exists('player-idle-anim')) {
-    anims.create({
-      key: 'player-idle-anim',
-      frames: anims.generateFrameNumbers('player-idle', { start: 0, end: 11 }),
-      frameRate: 8,
-      repeat: -1,
-    });
-  }
-
-  if (!anims.exists('player-run-anim')) {
-    anims.create({
-      key: 'player-run-anim',
-      frames: anims.generateFrameNumbers('player-run', { start: 0, end: 11 }),
-      frameRate: 14,
-      repeat: -1,
-    });
-  }
-
-  if (!anims.exists('player-airborne-anim')) {
-    anims.create({
-      key: 'player-airborne-anim',
-      frames: anims.generateFrameNumbers('player-run', { start: 3, end: 3 }),
-      frameRate: 1,
-      repeat: 0,
-    });
-  }
-}
-
 // ---- Top-down (Gather.town) ----
 // Placeholder: reutiliza player-idle (12 frames) e player-run (12 frames).
 // Quando houver spritesheets LPC dedicados, ajustar os indices de frames.
@@ -84,10 +52,6 @@ export function createTopDownAnimations(scene) {
       });
     }
   });
-}
-
-export function createAllAnimations(scene) {
-  createPlayerAnimations(scene);
 }
 
 export function createAllTopDownAnimations(scene) {

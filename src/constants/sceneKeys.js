@@ -6,7 +6,6 @@
 export const SCENE_KEYS = {
   BOOT: 'BootScene',
   PRELOAD: 'PreloadScene',
-  CLINICA_01: 'Clinica01Scene',
   /** Cena top-down estilo Gather.town — Clinica Estetica BC */
   CLINICA_TD: 'ClinicaTDScene',
 };

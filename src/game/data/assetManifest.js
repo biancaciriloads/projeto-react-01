@@ -12,8 +12,6 @@ const BASE = '/assets';
 
 /** Spritesheets do jogador (32x32 por frame, 12 frames). */
 export const PLAYER_SPRITESHEETS = [
-  { key: 'player-idle', path: `${BASE}/characters/player/adam-idle-anim.png`, frameWidth: 32, frameHeight: 32 },
-  { key: 'player-run', path: `${BASE}/characters/player/adam-run.png`, frameWidth: 32, frameHeight: 32 },
   { key: 'player-custom', path: `${BASE}/sprites/player.png`, frameWidth: 48, frameHeight: 96 },
 ];
 
