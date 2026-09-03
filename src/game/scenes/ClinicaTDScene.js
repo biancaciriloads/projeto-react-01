@@ -59,7 +59,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
     // Liga eventos com o React
     this._bindEvents();
     gameEventBus.emit('level:ready', { levelKey: 'clinica-td' });
-    useGameStore.getState().setLevel('clinica-td', { x: spawnPx.cx, y: spawnPx.cy });
+    useGameStore.getState().setLevel?.('clinica-td', { x: spawnPx.cx, y: spawnPx.cy });
 
     this.events.once('shutdown', this._cleanup, this);
     this.events.once('destroy',  this._cleanup, this);

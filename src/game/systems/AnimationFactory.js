@@ -47,38 +47,38 @@ export function createPlayerAnimations(scene) {
 export function createTopDownAnimations(scene) {
   const { anims } = scene;
 
-  // IDLE — frame unico por direcao (placeholder: frame 0 para todas)
+  // IDLE — frames 0-2 de cada direcao do spritesheet personalizado
   const idleConfigs = [
     { key: 'td-idle-down',  start: 0, end: 2 },
-    { key: 'td-idle-up',    start: 0, end: 2 },
-    { key: 'td-idle-left',  start: 0, end: 2 },
-    { key: 'td-idle-right', start: 0, end: 2 },
+    { key: 'td-idle-left',  start: 12, end: 14 },
+    { key: 'td-idle-right', start: 24, end: 26 },
+    { key: 'td-idle-up',    start: 36, end: 38 },
   ];
 
   idleConfigs.forEach(({ key, start, end }) => {
     if (!anims.exists(key)) {
       anims.create({
         key,
-        frames: anims.generateFrameNumbers('player-idle', { start, end }),
+        frames: anims.generateFrameNumbers('player-custom', { start, end }),
         frameRate: 4,
         repeat: -1,
       });
     }
   });
 
-  // WALK — ciclo de caminhada (placeholder: usa player-run completo)
+  // WALK — frames 3-8 de cada direcao do spritesheet personalizado
   const walkConfigs = [
     { key: 'td-walk-down',  start: 0, end: 5 },
-    { key: 'td-walk-up',    start: 6, end: 11 },
-    { key: 'td-walk-left',  start: 0, end: 5 },
-    { key: 'td-walk-right', start: 6, end: 11 },
+    { key: 'td-walk-left',  start: 15, end: 20 },
+    { key: 'td-walk-right', start: 27, end: 32 },
+    { key: 'td-walk-up',    start: 39, end: 44 },
   ];
 
   walkConfigs.forEach(({ key, start, end }) => {
     if (!anims.exists(key)) {
       anims.create({
         key,
-        frames: anims.generateFrameNumbers('player-run', { start, end }),
+        frames: anims.generateFrameNumbers('player-custom', { start, end }),
         frameRate: 10,
         repeat: -1,
       });

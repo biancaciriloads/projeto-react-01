@@ -90,6 +90,8 @@ export default function QuizModal() {
   const setActiveDialogue = useGameStore((s) => s.setActiveDialogue);
   const markNpcCompleted = useGameStore((s) => s.markNpcCompleted);
   const unlockDoor       = useGameStore((s) => s.unlockDoor);
+  const setGameCompleted = useGameStore((s) => s.setGameCompleted);
+  const playerName       = useGameStore((s) => s.playerName);
 
   // Controla a tela de resultado final (após todas as questões)
   const [showResult, setShowResult] = useState(false);
@@ -132,6 +134,9 @@ export default function QuizModal() {
         markNpcCompleted(npcId, score, total);
         const doorKey = NPC_DOOR_MAP[npcId];
         if (doorKey) unlockDoor(doorKey);
+        if (npcId === 'dra_bianca') {
+          setGameCompleted({ npcId, score, total, playerName });
+        }
       }
 
       const phase = passed ? 'success' : 'fail';
@@ -157,7 +162,7 @@ export default function QuizModal() {
         total,
       });
     },
-    [activeQuiz, markNpcCompleted, unlockDoor, clearQuiz, setActiveDialogue]
+    [activeQuiz, markNpcCompleted, unlockDoor, setGameCompleted, playerName, clearQuiz, setActiveDialogue]
   );
 
   // ── Reiniciar tentativa (em caso de reprovação) ───────────────────────────

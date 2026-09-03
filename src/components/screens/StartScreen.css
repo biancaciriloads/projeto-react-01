@@ -30,3 +30,35 @@
   color: var(--color-text-muted);
   margin: 0;
 }
+
+.start-screen__name-label {
+  align-self: stretch;
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.start-screen__name-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.start-screen__name-input:focus {
+  border-color: var(--color-accent);
+}
+
+.start-screen__name-error {
+  align-self: stretch;
+  margin: -10px 0 0;
+  color: #ff9f8a;
+  font-size: 13px;
+  text-align: left;
+}

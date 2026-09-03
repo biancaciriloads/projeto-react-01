@@ -45,7 +45,8 @@ export default function DialogBox() {
 
     if (phase === 'intro' && hasQuiz) {
       // Abre o QuizModal com as questões do NPC
-      const npcQuiz = quizData[npcId];
+      const quizId = npcId === 'dra_bianca' ? 'bianca' : npcId;
+      const npcQuiz = quizData[quizId];
       if (npcQuiz) {
         setActiveQuiz({
           npcId,

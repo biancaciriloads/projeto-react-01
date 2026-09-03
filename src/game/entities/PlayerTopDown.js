@@ -17,17 +17,19 @@ const DIRS = { DOWN: 'down', UP: 'up', LEFT: 'left', RIGHT: 'right' };
  */
 export default class PlayerTopDown extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
-    super(scene, x, y, 'player-idle', 0);
+    super(scene, x, y, 'player-custom', 0);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     this.setDepth(DEPTH.PLAYER);
     this.setCollideWorldBounds(true);
+    this.setScale(0.5);
+    this.setOrigin(0.5, 1);
 
-    // Hitbox compacta nos pes do sprite 32x32
+    // Hitbox compacta nos pes do sprite 48x96
     this.body.setSize(12, 12);
-    this.body.setOffset(10, 18);
+    this.body.setOffset(18, 84);
 
     this.controls = new InputController(scene);
     this.facing = DIRS.DOWN;

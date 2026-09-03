@@ -24,6 +24,8 @@ export const useGameStore = create(
         isMoving: false,
         sprite: '/assets/sprites/player.png',
       },
+      playerName: '',
+      setPlayerName: (playerName) => set({ playerName }),
       setPlayerPosition: (x, y, direction) =>
         set((state) => ({
           player: {
@@ -141,6 +143,7 @@ export const useGameStore = create(
         gameCompleted: state.gameCompleted,
         certificateData: state.certificateData,
         player: state.player,
+        playerName: state.playerName,
       }),
     }
   )

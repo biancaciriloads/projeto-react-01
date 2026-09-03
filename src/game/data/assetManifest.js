@@ -14,6 +14,7 @@ const BASE = '/assets';
 export const PLAYER_SPRITESHEETS = [
   { key: 'player-idle', path: `${BASE}/characters/player/adam-idle-anim.png`, frameWidth: 32, frameHeight: 32 },
   { key: 'player-run', path: `${BASE}/characters/player/adam-run.png`, frameWidth: 32, frameHeight: 32 },
+  { key: 'player-custom', path: `${BASE}/sprites/player.png`, frameWidth: 48, frameHeight: 96 },
 ];
 
 /** Tilesets usados para montar plataformas e cenário (grade de 16x16). */

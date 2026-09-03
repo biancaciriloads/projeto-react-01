@@ -70,7 +70,13 @@
 
 ---
 
-**Próximo Passo (Fase 2.4):**
-### 6. Etapa 2.4: Tela de Certificado Final e Créditos
-- Renderização do certificado ao concluir quiz da Dra. Bianca Cirilo.
-- Tela de créditos com animação de saída.
+### ✅ 6. Etapa 2.4 — Certificado Final e Animação de Vitória
+- Componente `src/components/Certificate.jsx` criado e integrado após o diálogo de vitória da Dra. Bianca Cirilo.
+- Input obrigatório para o nome do jogador na tela inicial, armazenado na store Zustand e exibido no certificado.
+- Animação de vitória com `react-confetti`, sincronizada com o estado de conclusão.
+- Impressão e salvamento do certificado em PDF via `window.print()`, com botão oculto em `@media print`.
+- Arquivos alterados: `src/components/Certificate.jsx`, `src/components/screens/StartScreen.jsx`, `src/components/screens/StartScreen.css`, `src/components/screens/GameScreen.jsx`, `src/components/DialogBox.jsx`, `src/store/useGameStore.js`.
+- Dependências adicionadas: nenhuma; `react-confetti` já estava instalado.
+- Como testar: iniciar a aplicação, informar um nome, clicar em `Jogar`, concluir os quizzes até a Dra. Bianca Cirilo, ser aprovado com pelo menos 70%, avançar pelo diálogo de vitória e usar o botão de impressão do certificado.
+- Build de produção concluído com sucesso.
+- Observações: o teste antigo da tela inicial ainda espera o texto `Mova-se com WASD ou setas`; permanecem também os warnings preexistentes de dependências de hooks.
