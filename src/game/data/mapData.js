@@ -1,31 +1,31 @@
 // Definição do mapa da clínica em coordenadas de grid (colunas x linhas).
 // O grid é depois projetado visualmente em isometria pelo componente IsometricMap.
 
-export const GRID_WIDTH = 22;
-export const GRID_HEIGHT = 20;
+export const GRID_WIDTH = 60;
+export const GRID_HEIGHT = 40;
 export const TILE_W = 64; // largura do losango isométrico
 export const TILE_H = 32; // altura do losango isométrico
 
 // Metadados de cada sala/área da clínica.
 // rect: {x, y, w, h} em tiles (área INTERNA caminhável).
 export const ROOMS = {
-  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 8, y: 17, w: 6, h: 2 } },
-  recepcao: { id: 'recepcao', nome: 'Recepção', tipo: 'recepcao', rect: { x: 6, y: 13, w: 10, h: 3 } },
-  loja: { id: 'loja', nome: 'Loja', tipo: 'loja', rect: { x: 17, y: 12, w: 4, h: 5 } },
-  espera: { id: 'espera', nome: 'Sala de Espera', tipo: 'espera', rect: { x: 6, y: 9, w: 10, h: 3 } },
-  sala1: { id: 'sala1', nome: 'Consultório 1', tipo: 'consultorio', rect: { x: 1, y: 5, w: 4, h: 3 } },
-  sala2: { id: 'sala2', nome: 'Consultório 2', tipo: 'consultorio', rect: { x: 1, y: 1, w: 4, h: 3 } },
-  sala3: { id: 'sala3', nome: 'Consultório 3', tipo: 'consultorio', rect: { x: 17, y: 5, w: 4, h: 3 } },
-  sala4: { id: 'sala4', nome: 'Consultório 4', tipo: 'consultorio', rect: { x: 17, y: 1, w: 4, h: 3 } },
-  sala5: { id: 'sala5', nome: 'Consultório 5 — Sala Master', tipo: 'consultorio-grande', rect: { x: 6, y: 1, w: 10, h: 3 } },
+  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 27, y: 37, w: 6, h: 3 } },
+  recepcao: { id: 'recepcao', nome: 'Recepção', tipo: 'recepcao', rect: { x: 17, y: 31, w: 26, h: 8 } },
+  loja: { id: 'loja', nome: 'Loja', tipo: 'loja', rect: { x: 45, y: 31, w: 12, h: 8 } },
+  espera: { id: 'espera', nome: 'Sala de Espera', tipo: 'espera', rect: { x: 22, y: 11, w: 16, h: 7 } },
+  sala1: { id: 'sala1', nome: 'Consultório 1', tipo: 'consultorio', rect: { x: 3, y: 20, w: 16, h: 9 } },
+  sala2: { id: 'sala2', nome: 'Consultório 2', tipo: 'consultorio', rect: { x: 3, y: 4, w: 16, h: 9 } },
+  sala3: { id: 'sala3', nome: 'Consultório 3', tipo: 'consultorio', rect: { x: 41, y: 20, w: 16, h: 9 } },
+  sala4: { id: 'sala4', nome: 'Consultório 4', tipo: 'consultorio', rect: { x: 41, y: 4, w: 16, h: 9 } },
+  sala5: { id: 'sala5', nome: 'Consultório 5 — Sala Master', tipo: 'consultorio-grande', rect: { x: 22, y: 1, w: 16, h: 9 } },
 };
 
 // Corredores que conectam as salas (garantem que o grid seja totalmente navegável).
 const CORREDORES = [
-  { x: 9, y: 1, w: 4, h: 17 },  // corredor central vertical
-  { x: 1, y: 2, w: 20, h: 1 },  // corredor horizontal superior (liga salas 2/4 à sala 5)
-  { x: 1, y: 6, w: 20, h: 1 },  // corredor horizontal do meio (liga salas 1/3)
-  { x: 9, y: 13, w: 9, h: 1 },  // corredor da recepção até a loja
+  { x: 29, y: 8, w: 3, h: 25 },   // corredor central até a Sala Master
+  { x: 17, y: 8, w: 26, h: 3 },   // corredor superior entre as salas 2/4
+  { x: 17, y: 24, w: 26, h: 3 },   // corredor central entre as salas 1/3
+  { x: 13, y: 33, w: 44, h: 3 },   // corredor da recepção até a loja
 ];
 
 function criarGridVazio() {
@@ -82,7 +82,7 @@ export function gridParaIso(x, y) {
 }
 
 // Posição inicial do jogador (na entrada da clínica).
-export const POSICAO_INICIAL = { x: 10, y: 18 };
+export const POSICAO_INICIAL = { x: 30, y: 36 };
 
 // NPCs: um especialista por consultório + o vendedor da loja.
 export const NPCS = [
