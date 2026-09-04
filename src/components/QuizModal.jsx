@@ -31,7 +31,7 @@ const NPC_DOOR_MAP = {
 const PORTRAITS = {
   enrico:     '/assets/portraits/RecepcionistaEnricoPerfil.png',
   nicolle:    '/assets/portraits/EspecialistaNicollePerfil.png',
-  henrique:   null,
+  henrique:   '/assets/portraits/EspecialistaHenriquePerfil.png',
   felipe:     '/assets/portraits/EspecialistaFelipePerfil.png',
   ryan:       '/assets/portraits/EspecialistaRyanPerfil.png',
   dra_bianca: '/assets/portraits/Dra.BiancaPerfil.png',
@@ -299,7 +299,7 @@ export default function QuizModal() {
               ESTADO 1 — Pergunta + Opções
               ══════════════════════════════════════════════ */}
           <AnimatePresence mode="wait">
-            {!showingFeedback && !showResult && currentQ && (
+            {!showingFeedback && !showResult && !finished && currentQ && (
               <motion.div
                 key={`question-${displayIndex}`}
                 className="quiz-body"

@@ -13,6 +13,7 @@ const BASE = '/assets';
 /** Spritesheets do jogador (32x32 por frame, 12 frames). */
 export const PLAYER_SPRITESHEETS = [
   { key: 'player-custom', path: `${BASE}/sprites/player.png`, frameWidth: 48, frameHeight: 96 },
+  { key: 'npc-enrico', path: `${BASE}/sprites/RecepcionistaEnrico.png`, frameWidth: 48, frameHeight: 96 },
 ];
 
 /** Tilesets usados para montar plataformas e cenário (grade de 16x16). */

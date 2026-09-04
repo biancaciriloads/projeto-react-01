@@ -80,7 +80,11 @@ export default class InteractionSystem {
 
     if (closest !== this.current) {
       this.current = closest;
-      this.scene.events.emit('interaction:near-change', closest ? { type: closest.type, label: closest.label } : null);
+      this.scene.events.emit('interaction:near-change', closest ? {
+        ...closest.data,
+        type: closest.type,
+        label: closest.label,
+      } : null);
     }
 
     // Dispara interação quando X é pressionado

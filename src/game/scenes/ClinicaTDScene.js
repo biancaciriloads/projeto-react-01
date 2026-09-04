@@ -8,6 +8,8 @@ import PlayerTopDown from '../entities/PlayerTopDown';
 import InteractionSystem from '../systems/InteractionSystem';
 import { gameEventBus } from '../events/GameEventBus';
 import { useGameStore } from '../../store/useGameStore';
+import { dialogueData } from '../../data/dialogueData';
+import { quizData } from '../../data/quizData';
 
 /**
  * ClinicaTDScene
@@ -115,9 +117,10 @@ export default class ClinicaTDScene extends Phaser.Scene {
     NPCS.forEach((npc) => {
       const px = this._gridToPx(npc.pos.x, npc.pos.y);
 
-      // Circulo colorido como sprite placeholder do NPC
-      const circle = this.add.circle(px.cx, px.cy, 6, Phaser.Display.Color.HexStringToColor(npc.cor).color);
-      circle.setDepth(DEPTH.PROPS_FRONT);
+      const visual = npc.spriteKey
+        ? this.add.sprite(px.cx, px.cy, npc.spriteKey, 0).setScale(0.5).setOrigin(0.5, 1)
+        : this.add.circle(px.cx, px.cy, 6, Phaser.Display.Color.HexStringToColor(npc.cor).color);
+      visual.setDepth(DEPTH.PROPS_FRONT);
 
       // Nome do NPC
       this.add.text(px.cx, px.cy - 10, npc.nome, {
@@ -156,18 +159,30 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
   _bindEvents() {
     this._offNear = this.events.on('interaction:near-change', (data) => {
-      useGameStore.getState().setNearby(data);
+      useGameStore.getState().setNearbyNpc(data ? {
+        ...data,
+        name: data.name || data.nome || data.label,
+      } : null);
     });
 
     this._offInteract = this.events.on('player:interact', ({ type, id, data }) => {
-      if (type === 'loja') {
-        gameEventBus.emit('ui:open-shop', data);
-      } else if (type === 'espelho') {
-        gameEventBus.emit('ui:open-mirror', data);
-      } else {
-        // Consultorio ou qualquer NPC de quiz
-        gameEventBus.emit('ui:open-quiz', { salaId: data?.salaId, npcId: id, ...data });
-      }
+      const npcDialogue = dialogueData[id];
+      if (!npcDialogue) return;
+
+      const gameStore = useGameStore.getState();
+      const alreadyCompleted = gameStore.npcProgress[id]?.completed;
+      const quizId = id === 'dra_bianca' ? 'bianca' : id;
+      const hasQuiz = Boolean(quizData[quizId]);
+      const phase = alreadyCompleted ? 'alreadyCompleted' : 'intro';
+
+      gameStore.setActiveDialogue({
+        npcId: id,
+        lines: npcDialogue[phase] || [],
+        currentLine: 0,
+        phase,
+        finished: false,
+        hasQuiz: phase === 'intro' && hasQuiz,
+      });
     });
   }
 

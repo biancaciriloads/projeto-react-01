@@ -22,7 +22,7 @@ import './DialogBox.css';
 const PORTRAITS = {
   enrico:     '/assets/portraits/RecepcionistaEnricoPerfil.png',
   nicolle:    '/assets/portraits/EspecialistaNicollePerfil.png',
-  henrique:   null, // sem arquivo — usa fallback de iniciais
+  henrique:   '/assets/portraits/EspecialistaHenriquePerfil.png',
   felipe:     '/assets/portraits/EspecialistaFelipePerfil.png',
   ryan:       '/assets/portraits/EspecialistaRyanPerfil.png',
   dra_bianca: '/assets/portraits/Dra.BiancaPerfil.png',

@@ -86,11 +86,10 @@ export const POSICAO_INICIAL = { x: 10, y: 18 };
 
 // NPCs: um especialista por consultório + o vendedor da loja.
 export const NPCS = [
-  { id: 'npc-sala1', salaId: 'sala1', nome: 'Dra. Beatriz', tema: 'Skincare & Fundamentos', cor: '#7fb3d5', pos: centroDaSala(ROOMS.sala1.rect) },
-  { id: 'npc-sala2', salaId: 'sala2', nome: 'Dr. Rafael', tema: 'Toxina Botulínica', cor: '#82c99a', pos: centroDaSala(ROOMS.sala2.rect) },
-  { id: 'npc-sala3', salaId: 'sala3', nome: 'Dra. Camila', tema: 'Bioestimuladores de Colágeno', cor: '#e0a96d', pos: centroDaSala(ROOMS.sala3.rect) },
-  { id: 'npc-sala4', salaId: 'sala4', nome: 'Dr. Otávio', tema: 'Preenchimentos & Riscos Vasculares', cor: '#d98080', pos: centroDaSala(ROOMS.sala4.rect) },
-  { id: 'npc-sala5', salaId: 'sala5', nome: 'Dra. Helena — Master', tema: 'Ácido Hialurônico Avançado', cor: '#c5a059', pos: centroDaSala(ROOMS.sala5.rect) },
-  { id: 'npc-vendedor', salaId: 'loja', nome: 'Vendedor Igor', tema: 'loja', cor: '#9b7fd1', pos: { x: ROOMS.loja.rect.x + 1, y: ROOMS.loja.rect.y + 1 } },
-  { id: 'espelho-loja', salaId: 'loja', nome: 'Espelho', tema: 'espelho', cor: '#cfe8f0', pos: { x: ROOMS.loja.rect.x + 3, y: ROOMS.loja.rect.y + 3 }, isEspelho: true },
+  { id: 'enrico', salaId: 'recepcao', nome: 'Enrico', tema: 'recepcao', cor: '#7fb3d5', spriteKey: 'npc-enrico', pos: centroDaSala(ROOMS.recepcao.rect) },
+  { id: 'nicolle', salaId: 'sala1', nome: 'Nicolle', tema: 'Skincare & Fundamentos', cor: '#7fb3d5', pos: centroDaSala(ROOMS.sala1.rect) },
+  { id: 'henrique', salaId: 'sala2', nome: 'Henrique', tema: 'Toxina Botulínica', cor: '#82c99a', pos: centroDaSala(ROOMS.sala2.rect) },
+  { id: 'felipe', salaId: 'sala3', nome: 'Felipe', tema: 'Bioestimuladores de Colágeno', cor: '#e0a96d', pos: centroDaSala(ROOMS.sala3.rect) },
+  { id: 'ryan', salaId: 'sala4', nome: 'Ryan', tema: 'Preenchimentos & Riscos Vasculares', cor: '#d98080', pos: centroDaSala(ROOMS.sala4.rect) },
+  { id: 'dra_bianca', salaId: 'sala5', nome: 'Dra. Bianca Cirilo', tema: 'Ácido Hialurônico Avançado', cor: '#c5a059', pos: centroDaSala(ROOMS.sala5.rect) },
 ];
