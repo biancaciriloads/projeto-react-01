@@ -6,7 +6,7 @@ import { GRID_WIDTH, GRID_HEIGHT, gerarGrid, gridParaIso, TILE_W, TILE_H, ROOMS 
 const COR_POR_TIPO = {
   entrada: '#d9c7a3',
   recepcao: '#e8d9b5',
-  saguao: '#e5ded0',
+  espera: '#e5ded0',
   consultorio: '#cfe3ee',
   'consultorio-grande': '#f0d9c9',
 };

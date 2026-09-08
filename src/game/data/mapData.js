@@ -9,23 +9,22 @@ export const TILE_H = 32; // altura do losango isométrico
 // Metadados de cada sala/área da clínica.
 // rect: {x, y, w, h} em tiles (área INTERNA caminhável).
 export const ROOMS = {
-  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 27, y: 38, w: 6, h: 2 } },
-  recepcao: { id: 'recepcao', nome: 'Sala de Recepção', tipo: 'recepcao', rect: { x: 20, y: 31, w: 20, h: 8 } },
-  saguao: { id: 'saguao', nome: 'Saguão Central', tipo: 'saguao', rect: { x: 26, y: 8, w: 8, h: 24 } },
-  sala1: { id: 'sala1', nome: 'Sala do Henrique', tipo: 'consultorio', rect: { x: 3, y: 22, w: 17, h: 7 } },
-  sala2: { id: 'sala2', nome: 'Sala da Nicolle', tipo: 'consultorio', rect: { x: 3, y: 5, w: 17, h: 7 } },
-  sala3: { id: 'sala3', nome: 'Sala do Felipe', tipo: 'consultorio', rect: { x: 40, y: 22, w: 17, h: 7 } },
-  sala4: { id: 'sala4', nome: 'Sala do Ryan', tipo: 'consultorio', rect: { x: 40, y: 5, w: 17, h: 7 } },
-  sala5: { id: 'sala5', nome: 'Sala da Bianca', tipo: 'consultorio-grande', rect: { x: 20, y: 1, w: 20, h: 7 } },
+  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 28, y: 31, w: 4, h: 2 } },
+  recepcao: { id: 'recepcao', nome: 'Recepção Enrico', tipo: 'recepcao', rect: { x: 14, y: 32, w: 32, h: 8 } },
+  espera: { id: 'espera', nome: 'Salão de Espera', tipo: 'espera', rect: { x: 20, y: 14, w: 20, h: 9 } },
+  sala1: { id: 'sala1', nome: 'Consultório Nicolle', tipo: 'consultorio', rect: { x: 3, y: 10, w: 14, h: 9 } },
+  sala2: { id: 'sala2', nome: 'Consultório Henrique', tipo: 'consultorio', rect: { x: 3, y: 23, w: 14, h: 9 } },
+  sala3: { id: 'sala3', nome: 'Consultório Felipe', tipo: 'consultorio', rect: { x: 43, y: 23, w: 14, h: 9 } },
+  sala4: { id: 'sala4', nome: 'Consultório Ryan', tipo: 'consultorio', rect: { x: 43, y: 10, w: 14, h: 9 } },
+  sala5: { id: 'sala5', nome: 'Consultório Bianca', tipo: 'consultorio-grande', rect: { x: 20, y: 1, w: 20, h: 7 } },
 };
 
-// Corredores laterais e saguão central, com vãos de parede para futuros jardins internos.
+// Planta espelhada: corredores horizontais, conexões centrais e vãos laterais para jardins.
 const CORREDORES = [
-  { x: 26, y: 8, w: 8, h: 24 },   // saguão central, da Sala da Bianca à recepção
-  { x: 20, y: 8, w: 6, h: 5 },    // corredor superior esquerdo
-  { x: 34, y: 8, w: 6, h: 5 },    // corredor superior direito
-  { x: 20, y: 22, w: 6, h: 7 },   // corredor inferior esquerdo
-  { x: 34, y: 22, w: 6, h: 7 },   // corredor inferior direito
+  { x: 14, y: 10, w: 32, h: 4 },  // corredor superior
+  { x: 14, y: 23, w: 32, h: 4 },  // corredor inferior
+  { x: 28, y: 7, w: 4, h: 7 },    // porta central da sala da Bianca
+  { x: 28, y: 27, w: 4, h: 7 },   // porta central da recepção
 ];
 
 function criarGridVazio() {
