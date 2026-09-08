@@ -1,5 +1,5 @@
 # CHECKPOINT - RPG 2D Clínica Estética BC
-## Status Atual: Etapa 2.3 (Sistema de Diálogos e Mecânica de Quiz) Concluída
+## Status Atual: Etapa 3.1 (Fatiamento Automático de Sprites e Configuração Base) Concluída
 
 ---
 
@@ -80,3 +80,41 @@
 - Como testar: iniciar a aplicação, informar um nome, clicar em `Jogar`, concluir os quizzes até a Dra. Bianca Cirilo, ser aprovado com pelo menos 70%, avançar pelo diálogo de vitória e usar o botão de impressão do certificado.
 - Build de produção concluído com sucesso.
 - Observações: o teste antigo da tela inicial ainda espera o texto `Mova-se com WASD ou setas`; permanecem também os warnings preexistentes de dependências de hooks.
+
+---
+
+### ✅ 7. Etapa 3.1 — Fatiamento Automático de Sprites e Configuração Base
+
+#### 7.1 Configuração de Sprites (`src/constants/spriteConfig.js`)
+- Módulo central com todas as constantes do sistema de sprites LPC.
+- `SPRITE_FRAME_W/H = 32px`, `SPRITE_COLS = 12`, `SPRITE_ROWS = 7`.
+- `DIRECTION_ROW`: mapeia `up/left/down/right` → linha do sprite sheet (padrão LPC).
+- `ANIMATIONS.idle`: 1 frame estático (coluna 0), 4 fps.
+- `ANIMATIONS.walk`: 8 frames de caminhada (colunas 1–8), 8 fps.
+- `getSpriteStyle()`: calcula `background-position` automaticamente por (col × frame, row × direção).
+- `CHARACTER_SPRITES`: mapa de `npcId → { sheet, idle }` para todos os 7 personagens.
+- `getCharacterSheet()`: retorna URL do sprite sheet com fallback para o player.
+
+#### 7.2 Hook de Animação (`src/hooks/useSpriteAnimation.js`)
+- `useSpriteAnimation(animName, running)`: controla frame ativo via `setInterval` calibrado por `fps`.
+- Reseta para frame 0 ao trocar de animação.
+- Pausa automaticamente quando `running = false`.
+
+#### 7.3 Componente `CharacterSprite` (`src/components/game/CharacterSprite.jsx`)
+- Props: `characterId`, `direction`, `isMoving`, `scale`, `className`, `style`.
+- Delega frame ao `useSpriteAnimation` e cálculo de CSS ao `getSpriteStyle`.
+- Substitui os placeholders de cor sólida no mapa.
+
+#### 7.4 Integração no `Map.jsx`
+- Importa `CharacterSprite` e substitui `<div class="player-sprite">` e `<div class="npc-sprite">`.
+- Player: animação `walk` enquanto tecla pressionada (`flagMovement` + debounce 200ms), `idle` quando parado; direção reflete a última tecla.
+- NPCs: idle estático, face `down`, escala 1:1.
+
+#### 7.5 Atualização do `Map.css`
+- Removidos placeholders de cor sólida (vermelho/ciano).
+- Estado `--nearby` usa `filter: drop-shadow` (compatível com sprites transparentes).
+- Estado `--completed` usa `filter: drop-shadow` verde.
+- `overflow: visible` adicionado ao container `.player` e `.npc`.
+
+- **Build:** `Compiled successfully` — sem erros.
+- **Assets utilizados:** `adam-full-sheet.png`, `alex-full-sheet.png`, `bob-full-sheet.png`, `amelia-full-sheet.png` (todos 384×224px, padrão LPC).

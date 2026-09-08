@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { useGameStore } from '../store/useGameStore';
 import { gameMap, GRID_ROWS, GRID_COLS, doorConnections, npcs } from '../data/mapData';
 import { dialogueData } from '../data/dialogueData';
 import { quizData } from '../data/quizData';
+import CharacterSprite from './game/CharacterSprite';
 import './Map.css';
 
 const TILE_SIZE = 32;
@@ -19,6 +20,18 @@ const TILE_SIZE = 32;
 const Map = () => {
   const { player, setPlayerPosition, doors, nearbyNpc, setNearbyNpc,
           activeDialogue, activeQuiz, setActiveDialogue, npcProgress } = useGameStore();
+
+  // ── Estado de movimento (para animação walk/idle) ──────────────────────────
+  const [isMoving, setIsMoving]  = useState(false);
+  const movingTimerRef           = useRef(null);
+
+  /** Marca o player como "em movimento" e agenda retorno ao idle */
+  const flagMovement = useCallback(() => {
+    setIsMoving(true);
+    clearTimeout(movingTimerRef.current);
+    // Volta ao idle 200 ms após o último keydown (tempo de 1 passo a 8fps)
+    movingTimerRef.current = setTimeout(() => setIsMoving(false), 200);
+  }, []);
 
   // ── Detecta NPC mais próximo ────────────────────────────────────────────────
   const detectNearbyNpc = useCallback((px, py) => {
@@ -105,13 +118,14 @@ const Map = () => {
       if (canMove) {
         setPlayerPosition(nextX, nextY, direction);
         detectNearbyNpc(nextX, nextY);
+        flagMovement();
       } else {
         setPlayerPosition(x, y, direction);
       }
     } else {
       setPlayerPosition(x, y, direction);
     }
-  }, [player, setPlayerPosition, doors, nearbyNpc, activeDialogue, activeQuiz, openDialogue, detectNearbyNpc]);
+  }, [player, setPlayerPosition, doors, nearbyNpc, activeDialogue, activeQuiz, openDialogue, detectNearbyNpc, flagMovement]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -157,7 +171,7 @@ const Map = () => {
 
         {/* Renderiza NPCs */}
         {npcs.map((npc) => {
-          const isNearby = nearbyNpc?.id === npc.id;
+          const isNearby    = nearbyNpc?.id === npc.id;
           const isCompleted = Boolean(npcProgress[npc.id]?.completed);
 
           return (
@@ -178,9 +192,13 @@ const Map = () => {
                 <div className="npc-completed-badge">✓</div>
               )}
 
-              <div
+              {/* Sprite animado do NPC (idle face-down) */}
+              <CharacterSprite
+                characterId={npc.id}
+                direction="down"
+                isMoving={false}
+                scale={1}
                 className={`npc-sprite ${isNearby ? 'npc-sprite--nearby' : ''} ${isCompleted ? 'npc-sprite--completed' : ''}`}
-                title={npc.name}
               />
               <div className="npc-name-tag">{npc.name}</div>
             </div>
@@ -192,10 +210,17 @@ const Map = () => {
           className="player"
           style={{
             left: `${player.x * TILE_SIZE}px`,
-            top: `${player.y * TILE_SIZE}px`,
+            top:  `${player.y * TILE_SIZE}px`,
           }}
         >
-          <div className={`player-sprite dir-${player.direction}`} />
+          {/* Sprite animado do Player com direção e walk/idle */}
+          <CharacterSprite
+            characterId="player"
+            direction={player.direction}
+            isMoving={isMoving}
+            scale={1}
+            className="player-sprite"
+          />
         </div>
       </div>
     </div>
