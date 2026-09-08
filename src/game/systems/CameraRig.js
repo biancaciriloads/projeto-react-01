@@ -27,7 +27,7 @@ export function setupCameraRigTopDown(scene, target, worldWidth, worldHeight) {
   const cam = scene.cameras.main;
 
   cam.setBounds(0, 0, worldWidth, worldHeight);
-  cam.setZoom(3);            // zoom maior para pixel art top-down
+  cam.setZoom(1.2);          // zoom reduzido para mostrar mais da clínica
   cam.startFollow(target, true, 0.08, 0.08);
   cam.setRoundPixels(true);
 
