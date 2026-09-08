@@ -77,9 +77,10 @@ export default class ClinicaTDScene extends Phaser.Scene {
         const px   = col * TS;
         const py   = row * TS;
 
-        if (cell === '#') {
-          // Parede: retangulo colorido + corpo fisico estatico
-          const wall = this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, 0x3a302a);
+        if (cell === '#' || cell === 'G') {
+          // Parede ou jardim bloqueado: visual solido + corpo fisico estatico
+          const color = cell === 'G' ? 0x78a866 : 0x3a302a;
+          const wall = this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, color);
           wall.setDepth(DEPTH.PLATFORMS);
           this.physics.add.existing(wall, true);
           this.wallGroup.add(wall);

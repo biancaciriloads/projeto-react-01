@@ -7,7 +7,7 @@ export const TILE_W = 64; // largura do losango isométrico
 export const TILE_H = 32; // altura do losango isométrico
 
 // Metadados de cada sala/área da clínica.
-// rect: {x, y, w, h} em tiles (área INTERNA caminhável).
+// rect: {x, y, w, h} em tiles (área da sala ou do terreno mapeado).
 export const ROOMS = {
   entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 29, y: 30, w: 2, h: 2 } },
   recepcao: { id: 'recepcao', nome: 'Recepção Enrico', tipo: 'recepcao', rect: { x: 14, y: 32, w: 32, h: 8 } },
@@ -69,7 +69,7 @@ export function gerarGrid() {
 export function tileEhCaminhavel(grid, x, y) {
   if (y < 0 || y >= GRID_HEIGHT || x < 0 || x >= GRID_WIDTH) return false;
   const t = grid[y][x];
-  return t === '.' || t === 'G';
+  return t === '.';
 }
 
 // Posição central de uma sala (em tiles), útil para posicionar NPCs/objetos.
