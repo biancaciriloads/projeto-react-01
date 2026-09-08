@@ -82,22 +82,26 @@ export default class ClinicaTDScene extends Phaser.Scene {
         const py   = row * TS;
 
         if (cell === '#' || cell === 'G') {
-          // Parede ou jardim bloqueado: visual solido + corpo fisico estatico
-          const color = cell === 'G' ? 0x78a866 : 0x3a302a;
-          const wall = this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, color);
+          const wall = this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, 0x3a302a);
+          wall.setAlpha(0);
           wall.setDepth(DEPTH.PLATFORMS);
           this.physics.add.existing(wall, true);
           this.wallGroup.add(wall);
+        }
+
+        if (cell === 'G') {
+          this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', floorFrame)
+            .setDisplaySize(TS, TS)
+            .setTint(0xb8d8a8)
+            .setDepth(DEPTH.BACKGROUND);
+        } else if (cell === '#') {
           this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', wallFrame)
             .setDisplaySize(TS, TS)
-            .setTint(cell === 'G' ? 0x8bb878 : 0xffffff)
             .setDepth(DEPTH.PLATFORMS + 1);
         } else {
           // Piso caminhavel
-          const color = cell === 'G' ? 0xb8d8a8 : 0xd8cfc0;
           this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', floorFrame)
             .setDisplaySize(TS, TS)
-            .setTint(color)
             .setDepth(DEPTH.BACKGROUND);
 
           // Borda sutil entre tiles

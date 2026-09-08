@@ -2,7 +2,7 @@ import { gameEventBus } from '../events/GameEventBus';
 import { gerarGrid } from '../data/mapData';
 
 const GRID_SIZE = 16;
-const MIN_SCALE = 0.25;
+const MIN_SCALE = 0.1;
 const MAX_SCALE = 4;
 const MIN_DEPTH = 1;
 const MAX_DEPTH = 3;
@@ -26,6 +26,7 @@ function normalizeConfig(config = {}) {
 function toExportItem(object) {
   return {
     key: object.key,
+    frame: object.frame?.name ?? 0,
     x: Math.round(object.x),
     y: Math.round(object.y),
     scaleX: Number(object.scaleX.toFixed(2)),

@@ -89,8 +89,8 @@ export default function AdminDecoratorMenu() {
       <div className="admin-control-grid">
         <label className="admin-field"><span>Rotação</span><select value={config.rotation} onChange={(event) => updateConfig({ rotation: Number(event.target.value) })}>{[0, 90, 180, 270].map((value) => <option key={value} value={value}>{value}°</option>)}</select></label>
         <label className="admin-field"><span>Depth</span><select value={config.depth} onChange={(event) => updateConfig({ depth: Number(event.target.value) })}>{[1, 2, 3].map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-        <label className="admin-field"><span>Scale X</span><input type="number" min="0.25" max="4" step="0.05" value={config.scaleX} onChange={(event) => updateConfig({ scaleX: Number(event.target.value) })} /></label>
-        <label className="admin-field"><span>Scale Y</span><input type="number" min="0.25" max="4" step="0.05" value={config.scaleY} onChange={(event) => updateConfig({ scaleY: Number(event.target.value) })} /></label>
+        <label className="admin-field"><span>Scale X <output>{config.scaleX.toFixed(1)}</output></span><input type="number" min="0.1" max="4" step="0.1" value={config.scaleX} onChange={(event) => updateConfig({ scaleX: Number(event.target.value) })} /></label>
+        <label className="admin-field"><span>Scale Y <output>{config.scaleY.toFixed(1)}</output></span><input type="number" min="0.1" max="4" step="0.1" value={config.scaleY} onChange={(event) => updateConfig({ scaleY: Number(event.target.value) })} /></label>
       </div>
 
       <label className="admin-check"><input type="checkbox" checked={config.hasCollision} onChange={(event) => updateConfig({ hasCollision: event.target.checked })} /> Colisão estática</label>
