@@ -9,22 +9,30 @@ export const TILE_H = 32; // altura do losango isométrico
 // Metadados de cada sala/área da clínica.
 // rect: {x, y, w, h} em tiles (área INTERNA caminhável).
 export const ROOMS = {
-  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 28, y: 31, w: 4, h: 2 } },
+  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 29, y: 30, w: 2, h: 2 } },
   recepcao: { id: 'recepcao', nome: 'Recepção Enrico', tipo: 'recepcao', rect: { x: 14, y: 32, w: 32, h: 8 } },
-  espera: { id: 'espera', nome: 'Salão de Espera', tipo: 'espera', rect: { x: 20, y: 14, w: 20, h: 9 } },
+  sala5: { id: 'sala5', nome: 'Consultório Bianca', tipo: 'consultorio-grande', rect: { x: 20, y: 1, w: 20, h: 7 } },
   sala1: { id: 'sala1', nome: 'Consultório Nicolle', tipo: 'consultorio', rect: { x: 3, y: 10, w: 14, h: 9 } },
+  sala4: { id: 'sala4', nome: 'Consultório Ryan', tipo: 'consultorio', rect: { x: 43, y: 10, w: 14, h: 9 } },
+  espera: { id: 'espera', nome: 'Salão de Espera', tipo: 'espera', rect: { x: 20, y: 14, w: 20, h: 9 } },
   sala2: { id: 'sala2', nome: 'Consultório Henrique', tipo: 'consultorio', rect: { x: 3, y: 23, w: 14, h: 9 } },
   sala3: { id: 'sala3', nome: 'Consultório Felipe', tipo: 'consultorio', rect: { x: 43, y: 23, w: 14, h: 9 } },
-  sala4: { id: 'sala4', nome: 'Consultório Ryan', tipo: 'consultorio', rect: { x: 43, y: 10, w: 14, h: 9 } },
-  sala5: { id: 'sala5', nome: 'Consultório Bianca', tipo: 'consultorio-grande', rect: { x: 20, y: 1, w: 20, h: 7 } },
+  jardimInternoEsquerdo: { id: 'jardimInternoEsquerdo', nome: 'Jardim Interno', tipo: 'jardim', rect: { x: 18, y: 14, w: 2, h: 9 } },
+  jardimInternoDireito: { id: 'jardimInternoDireito', nome: 'Jardim Interno', tipo: 'jardim', rect: { x: 40, y: 14, w: 2, h: 9 } },
+  jardimExternoEsquerdo: { id: 'jardimExternoEsquerdo', nome: 'Jardim', tipo: 'jardim', rect: { x: 3, y: 32, w: 11, h: 8 } },
+  jardimExternoDireito: { id: 'jardimExternoDireito', nome: 'Jardim', tipo: 'jardim', rect: { x: 46, y: 32, w: 11, h: 8 } },
 };
 
-// Planta espelhada: corredores horizontais, conexões centrais e vãos laterais para jardins.
+// Planta matricial espelhada: corredores horizontais e portas com apenas duas células.
 const CORREDORES = [
-  { x: 14, y: 10, w: 32, h: 4 },  // corredor superior
-  { x: 14, y: 23, w: 32, h: 4 },  // corredor inferior
-  { x: 28, y: 7, w: 4, h: 7 },    // porta central da sala da Bianca
-  { x: 28, y: 27, w: 4, h: 7 },   // porta central da recepção
+  { x: 18, y: 10, w: 24, h: 4 },  // corredor superior
+  { x: 18, y: 23, w: 24, h: 4 },  // corredor inferior
+  { x: 29, y: 8, w: 2, h: 2 },    // porta norte da sala da Bianca
+  { x: 29, y: 27, w: 2, h: 5 },   // porta central da recepção
+  { x: 17, y: 11, w: 1, h: 2 },   // porta da Nicolle
+  { x: 42, y: 11, w: 1, h: 2 },   // porta do Ryan
+  { x: 17, y: 24, w: 1, h: 2 },   // porta do Henrique
+  { x: 42, y: 24, w: 1, h: 2 },   // porta do Felipe
 ];
 
 function criarGridVazio() {
@@ -48,7 +56,10 @@ function preencherRetangulo(grid, rect, tipo) {
 export function gerarGrid() {
   const grid = criarGridVazio();
 
-  Object.values(ROOMS).forEach((sala) => preencherRetangulo(grid, sala.rect, '.'));
+  Object.values(ROOMS).forEach((sala) => {
+    const tipoTile = sala.tipo === 'jardim' ? 'G' : '.';
+    preencherRetangulo(grid, sala.rect, tipoTile);
+  });
 
   CORREDORES.forEach((c) => preencherRetangulo(grid, c, '.'));
 
@@ -58,7 +69,7 @@ export function gerarGrid() {
 export function tileEhCaminhavel(grid, x, y) {
   if (y < 0 || y >= GRID_HEIGHT || x < 0 || x >= GRID_WIDTH) return false;
   const t = grid[y][x];
-  return t === '.';
+  return t === '.' || t === 'G';
 }
 
 // Posição central de uma sala (em tiles), útil para posicionar NPCs/objetos.

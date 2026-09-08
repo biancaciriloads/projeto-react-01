@@ -85,7 +85,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
           this.wallGroup.add(wall);
         } else {
           // Piso caminhavel
-          const color = 0xd8cfc0;
+          const color = cell === 'G' ? 0xb8d8a8 : 0xd8cfc0;
           this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, color).setDepth(DEPTH.BACKGROUND);
 
           // Borda sutil entre tiles

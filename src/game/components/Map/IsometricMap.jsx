@@ -7,6 +7,7 @@ const COR_POR_TIPO = {
   entrada: '#d9c7a3',
   recepcao: '#e8d9b5',
   espera: '#e5ded0',
+  jardim: '#b8d8a8',
   consultorio: '#cfe3ee',
   'consultorio-grande': '#f0d9c9',
 };
@@ -46,7 +47,7 @@ export default function IsometricMap({ children }) {
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const t = grid[y][x];
-        if (t === '.') {
+        if (t === '.' || t === 'G') {
           arr.push({ x, y, tipo: tipoDaSalaNoTile(x, y) });
         }
       }
