@@ -9,23 +9,23 @@ export const TILE_H = 32; // altura do losango isométrico
 // Metadados de cada sala/área da clínica.
 // rect: {x, y, w, h} em tiles (área INTERNA caminhável).
 export const ROOMS = {
-  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 27, y: 37, w: 6, h: 3 } },
-  recepcao: { id: 'recepcao', nome: 'Recepção', tipo: 'recepcao', rect: { x: 17, y: 31, w: 26, h: 8 } },
-  loja: { id: 'loja', nome: 'Loja', tipo: 'loja', rect: { x: 45, y: 31, w: 12, h: 8 } },
-  espera: { id: 'espera', nome: 'Sala de Espera', tipo: 'espera', rect: { x: 22, y: 11, w: 16, h: 7 } },
-  sala1: { id: 'sala1', nome: 'Consultório 1', tipo: 'consultorio', rect: { x: 3, y: 20, w: 16, h: 9 } },
-  sala2: { id: 'sala2', nome: 'Consultório 2', tipo: 'consultorio', rect: { x: 3, y: 4, w: 16, h: 9 } },
-  sala3: { id: 'sala3', nome: 'Consultório 3', tipo: 'consultorio', rect: { x: 41, y: 20, w: 16, h: 9 } },
-  sala4: { id: 'sala4', nome: 'Consultório 4', tipo: 'consultorio', rect: { x: 41, y: 4, w: 16, h: 9 } },
-  sala5: { id: 'sala5', nome: 'Consultório 5 — Sala Master', tipo: 'consultorio-grande', rect: { x: 22, y: 1, w: 16, h: 9 } },
+  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 27, y: 38, w: 6, h: 2 } },
+  recepcao: { id: 'recepcao', nome: 'Sala de Recepção', tipo: 'recepcao', rect: { x: 20, y: 31, w: 20, h: 8 } },
+  saguao: { id: 'saguao', nome: 'Saguão Central', tipo: 'saguao', rect: { x: 26, y: 8, w: 8, h: 24 } },
+  sala1: { id: 'sala1', nome: 'Sala do Henrique', tipo: 'consultorio', rect: { x: 3, y: 22, w: 17, h: 7 } },
+  sala2: { id: 'sala2', nome: 'Sala da Nicolle', tipo: 'consultorio', rect: { x: 3, y: 5, w: 17, h: 7 } },
+  sala3: { id: 'sala3', nome: 'Sala do Felipe', tipo: 'consultorio', rect: { x: 40, y: 22, w: 17, h: 7 } },
+  sala4: { id: 'sala4', nome: 'Sala do Ryan', tipo: 'consultorio', rect: { x: 40, y: 5, w: 17, h: 7 } },
+  sala5: { id: 'sala5', nome: 'Sala da Bianca', tipo: 'consultorio-grande', rect: { x: 20, y: 1, w: 20, h: 7 } },
 };
 
-// Corredores que conectam as salas (garantem que o grid seja totalmente navegável).
+// Corredores laterais e saguão central, com vãos de parede para futuros jardins internos.
 const CORREDORES = [
-  { x: 29, y: 8, w: 3, h: 25 },   // corredor central até a Sala Master
-  { x: 17, y: 8, w: 26, h: 3 },   // corredor superior entre as salas 2/4
-  { x: 17, y: 24, w: 26, h: 3 },   // corredor central entre as salas 1/3
-  { x: 13, y: 33, w: 44, h: 3 },   // corredor da recepção até a loja
+  { x: 26, y: 8, w: 8, h: 24 },   // saguão central, da Sala da Bianca à recepção
+  { x: 20, y: 8, w: 6, h: 5 },    // corredor superior esquerdo
+  { x: 34, y: 8, w: 6, h: 5 },    // corredor superior direito
+  { x: 20, y: 22, w: 6, h: 7 },   // corredor inferior esquerdo
+  { x: 34, y: 22, w: 6, h: 7 },   // corredor inferior direito
 ];
 
 function criarGridVazio() {
@@ -49,10 +49,7 @@ function preencherRetangulo(grid, rect, tipo) {
 export function gerarGrid() {
   const grid = criarGridVazio();
 
-  Object.values(ROOMS).forEach((sala) => {
-    const tipoTile = sala.tipo === 'loja' ? 'L' : '.';
-    preencherRetangulo(grid, sala.rect, tipoTile);
-  });
+  Object.values(ROOMS).forEach((sala) => preencherRetangulo(grid, sala.rect, '.'));
 
   CORREDORES.forEach((c) => preencherRetangulo(grid, c, '.'));
 
@@ -62,7 +59,7 @@ export function gerarGrid() {
 export function tileEhCaminhavel(grid, x, y) {
   if (y < 0 || y >= GRID_HEIGHT || x < 0 || x >= GRID_WIDTH) return false;
   const t = grid[y][x];
-  return t === '.' || t === 'L';
+  return t === '.';
 }
 
 // Posição central de uma sala (em tiles), útil para posicionar NPCs/objetos.
@@ -84,7 +81,7 @@ export function gridParaIso(x, y) {
 // Posição inicial do jogador (na entrada da clínica).
 export const POSICAO_INICIAL = { x: 30, y: 36 };
 
-// NPCs: um especialista por consultório + o vendedor da loja.
+// NPCs: um especialista por consultório e Enrico na recepção.
 export const NPCS = [
   { id: 'enrico', salaId: 'recepcao', nome: 'Enrico', tema: 'recepcao', cor: '#7fb3d5', spriteKey: 'npc-enrico', pos: centroDaSala(ROOMS.recepcao.rect) },
   { id: 'nicolle', salaId: 'sala1', nome: 'Nicolle', tema: 'Skincare & Fundamentos', cor: '#7fb3d5', pos: centroDaSala(ROOMS.sala1.rect) },

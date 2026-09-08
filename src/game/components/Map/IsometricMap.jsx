@@ -6,8 +6,7 @@ import { GRID_WIDTH, GRID_HEIGHT, gerarGrid, gridParaIso, TILE_W, TILE_H, ROOMS 
 const COR_POR_TIPO = {
   entrada: '#d9c7a3',
   recepcao: '#e8d9b5',
-  loja: '#dcd0f0',
-  espera: '#d7e4d0',
+  saguao: '#e5ded0',
   consultorio: '#cfe3ee',
   'consultorio-grande': '#f0d9c9',
 };
@@ -16,7 +15,7 @@ function tipoDaSalaNoTile(x, y) {
   for (const sala of Object.values(ROOMS)) {
     const { rect } = sala;
     if (x >= rect.x && x < rect.x + rect.w && y >= rect.y && y < rect.y + rect.h) {
-      return sala.tipo === 'loja' ? 'loja' : sala.tipo;
+      return sala.tipo;
     }
   }
   return null;
@@ -47,7 +46,7 @@ export default function IsometricMap({ children }) {
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const t = grid[y][x];
-        if (t === '.' || t === 'L') {
+        if (t === '.') {
           arr.push({ x, y, tipo: tipoDaSalaNoTile(x, y) });
         }
       }

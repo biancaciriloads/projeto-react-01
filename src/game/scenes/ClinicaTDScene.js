@@ -21,7 +21,6 @@ import { quizData } from '../../data/quizData';
  * Paleta de tiles (placeholders — sem Tiled por enquanto):
  *  '.'  => tile de piso caminhavel (cor: #d4c8b0)
  *  '#'  => parede nao-caminhavel (cor: #4a3f35)
- *  'L'  => piso da loja (cor: #b0c8d4)
  */
 export default class ClinicaTDScene extends Phaser.Scene {
   constructor() {
@@ -86,7 +85,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
           this.wallGroup.add(wall);
         } else {
           // Piso caminhavel
-          const color = cell === 'L' ? 0xb8d8e8 : 0xd8cfc0;
+          const color = 0xd8cfc0;
           this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, color).setDepth(DEPTH.BACKGROUND);
 
           // Borda sutil entre tiles
