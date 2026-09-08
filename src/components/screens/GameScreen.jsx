@@ -9,6 +9,7 @@ import QuizModal from '../QuizModal';
 import Certificate from '../Certificate';
 import { useGameStore } from '../../store/useGameStore';
 import './GameScreen.css';
+import AdminDecoratorMenu from '../ui/AdminDecoratorMenu';
 
 /**
  * GameScreen — Tela principal de jogo (Etapa 2.3)
@@ -45,6 +46,7 @@ export default function GameScreen() {
       ) : (
         <>
           <GameCanvas />
+          <AdminDecoratorMenu />
           <div className="game-react-map-layer">
             <Map />
           </div>

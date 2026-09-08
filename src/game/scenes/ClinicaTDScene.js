@@ -10,6 +10,7 @@ import { gameEventBus } from '../events/GameEventBus';
 import { useGameStore } from '../../store/useGameStore';
 import { dialogueData } from '../../data/dialogueData';
 import { quizData } from '../../data/quizData';
+import AdminDecoratorSystem from '../systems/AdminDecoratorSystem';
 
 /**
  * ClinicaTDScene
@@ -44,6 +45,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
     this._buildTileGrid(grid);
     this._buildRoomLabels();
+    this.adminDecoratorSystem = new AdminDecoratorSystem(this);
 
     // Spawn do jogador
     const spawnPx = this._gridToPx(POSICAO_INICIAL.x, POSICAO_INICIAL.y);
@@ -199,6 +201,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
     if (this._cleanedUp) return;
     this._cleanedUp = true;
     this.interactionSystem?.destroy();
+    this.adminDecoratorSystem?.destroy();
   }
 
   update(time, delta) {
