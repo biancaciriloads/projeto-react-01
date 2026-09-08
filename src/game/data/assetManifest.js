@@ -20,6 +20,12 @@ export const PLAYER_SPRITESHEETS = [
 export const TILESET_SPRITESHEETS = [
   { key: 'tiles-room-builder', path: `${BASE}/tilesets/interiors/room-builder_16x16.png`, frameWidth: 16, frameHeight: 16 },
   { key: 'tiles-interiors', path: `${BASE}/tilesets/interiors/interiors_16x16.png`, frameWidth: 16, frameHeight: 16 },
+  {
+    key: 'tiles-clinic-48',
+    path: `${BASE}/tilesets/Modern_Interiors_Free_v2.216bit/Modern tiles_Free/Interiors_free/48x48/Room_Builder_free_48x48.png`,
+    frameWidth: 48,
+    frameHeight: 48,
+  },
 ];
 
 /**

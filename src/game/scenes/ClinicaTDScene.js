@@ -70,6 +70,8 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
   _buildTileGrid(grid) {
     const TS = TILE_SIZE;
+    const floorFrame = 0;
+    const wallFrame = 1;
 
     for (let row = 0; row < GRID_HEIGHT; row++) {
       for (let col = 0; col < GRID_WIDTH; col++) {
@@ -84,10 +86,17 @@ export default class ClinicaTDScene extends Phaser.Scene {
           wall.setDepth(DEPTH.PLATFORMS);
           this.physics.add.existing(wall, true);
           this.wallGroup.add(wall);
+          this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', wallFrame)
+            .setDisplaySize(TS, TS)
+            .setTint(cell === 'G' ? 0x8bb878 : 0xffffff)
+            .setDepth(DEPTH.PLATFORMS + 1);
         } else {
           // Piso caminhavel
           const color = cell === 'G' ? 0xb8d8a8 : 0xd8cfc0;
-          this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, color).setDepth(DEPTH.BACKGROUND);
+          this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', floorFrame)
+            .setDisplaySize(TS, TS)
+            .setTint(color)
+            .setDepth(DEPTH.BACKGROUND);
 
           // Borda sutil entre tiles
           const border = this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, 0x000000, 0.06);
