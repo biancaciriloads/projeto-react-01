@@ -1,0 +1,40 @@
+PROMPT 2 — SUBSTITUIÇÃO COMPLETA DA MATRIZ EM MAPDATA.JS
+
+Substitua a estrutura de array do mapa dentro do arquivo `mapData.js` pelo código do array abaixo:
+
+const NEW_MAP_LAYOUT = [
+  "#################################################",
+  "##############.....................##############",
+  "##############.....................##############",
+  "##############.....................##############",
+  "##############........BIANCA.......##############",
+  "##############.....................##############",
+  "##############.....................##############",
+  "#.......################D################.......#",
+  "#........#.............................#........#",
+  "#........D........CORREDOR.SUPERIOR....D........#",
+  "#NICOLLE.#.............................#...RYAN.#",
+  "#........##############DDD###############.......#",
+  "#........####.......................#####.......#",
+  "#........####.......................#####.......#",
+  "#############....SALÃO.DE.ESPERA....#############",
+  "#############.......................#############",
+  "#........####.......................####........#",
+  "#........####.......................####........#",
+  "#........##############DDD##############........#",
+  "#HENRIQUE#.............................#..FELIPE#",
+  "#........D........CORREDOR.INFERIOR....D........#",
+  "#........#.............................#........#",
+  "#........##############DDD##############........#",
+  "#############.......................#############",
+  "GGGGGGGGG####.......................####GGGGGGGGG",
+  "GGGGGGGGG####........RECEPÇÃO.......####GGGGGGGGG",
+  "GGGGGGGGG####.........ENRICO........####GGGGGGGGG",
+  "GGGGGGGGG####.......................####GGGGGGGGG",
+  "GGGGGGGGG###############################GGGGGGGGG"
+];
+
+Regras de aplicação:
+1. No array final renderizado no jogo, troque todas as letras dos nomes dos NPCs (ex: BIANCA, NICOLLE) por '.' (ponto / chão caminhável), mantendo APENAS as letras 'G' (Jardim) e 'D' (Porta/Passagem).
+2. Garanta que '#' (Parede) e 'G' (Jardim) possuam colisão ativa (wallGroup / estático).
+3. Atualize o ponto de spawn de cada NPC no Phaser para o centro exato do chão das suas novas salas.

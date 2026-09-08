@@ -1,78 +1,66 @@
-// Definição do mapa da clínica em coordenadas de grid (colunas x linhas).
-// O grid é depois projetado visualmente em isometria pelo componente IsometricMap.
+// Matriz da clinica em coordenadas de grid (colunas x linhas).
+// Somente #, G, D e . chegam ao grid final; os nomes da planta viram piso.
 
-export const GRID_WIDTH = 60;
-export const GRID_HEIGHT = 40;
-export const TILE_W = 64; // largura do losango isométrico
-export const TILE_H = 32; // altura do losango isométrico
-
-// Metadados de cada sala/área da clínica.
-// rect: {x, y, w, h} em tiles (área da sala ou do terreno mapeado).
-export const ROOMS = {
-  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 29, y: 30, w: 2, h: 2 } },
-  recepcao: { id: 'recepcao', nome: 'Recepção Enrico', tipo: 'recepcao', rect: { x: 14, y: 32, w: 32, h: 8 } },
-  sala5: { id: 'sala5', nome: 'Consultório Bianca', tipo: 'consultorio-grande', rect: { x: 20, y: 1, w: 20, h: 7 } },
-  sala1: { id: 'sala1', nome: 'Consultório Nicolle', tipo: 'consultorio', rect: { x: 3, y: 10, w: 14, h: 9 } },
-  sala4: { id: 'sala4', nome: 'Consultório Ryan', tipo: 'consultorio', rect: { x: 43, y: 10, w: 14, h: 9 } },
-  espera: { id: 'espera', nome: 'Salão de Espera', tipo: 'espera', rect: { x: 20, y: 14, w: 20, h: 9 } },
-  sala2: { id: 'sala2', nome: 'Consultório Henrique', tipo: 'consultorio', rect: { x: 3, y: 23, w: 14, h: 9 } },
-  sala3: { id: 'sala3', nome: 'Consultório Felipe', tipo: 'consultorio', rect: { x: 43, y: 23, w: 14, h: 9 } },
-  jardimInternoEsquerdo: { id: 'jardimInternoEsquerdo', nome: 'Jardim Interno', tipo: 'jardim', rect: { x: 18, y: 14, w: 2, h: 9 } },
-  jardimInternoDireito: { id: 'jardimInternoDireito', nome: 'Jardim Interno', tipo: 'jardim', rect: { x: 40, y: 14, w: 2, h: 9 } },
-  jardimExternoEsquerdo: { id: 'jardimExternoEsquerdo', nome: 'Jardim', tipo: 'jardim', rect: { x: 3, y: 32, w: 11, h: 8 } },
-  jardimExternoDireito: { id: 'jardimExternoDireito', nome: 'Jardim', tipo: 'jardim', rect: { x: 46, y: 32, w: 11, h: 8 } },
-};
-
-// Planta matricial espelhada: corredores horizontais e portas com apenas duas células.
-const CORREDORES = [
-  { x: 18, y: 10, w: 24, h: 4 },  // corredor superior
-  { x: 18, y: 23, w: 24, h: 4 },  // corredor inferior
-  { x: 29, y: 8, w: 2, h: 2 },    // porta norte da sala da Bianca
-  { x: 29, y: 27, w: 2, h: 5 },   // porta central da recepção
-  { x: 17, y: 11, w: 1, h: 2 },   // porta da Nicolle
-  { x: 42, y: 11, w: 1, h: 2 },   // porta do Ryan
-  { x: 17, y: 24, w: 1, h: 2 },   // porta do Henrique
-  { x: 42, y: 24, w: 1, h: 2 },   // porta do Felipe
+const NEW_MAP_LAYOUT = [
+  '#################################################',
+  '#################...............#################',
+  '#################.....BIANCA....#################',
+  '#################...............#################',
+  '########################D########################',
+  '########################D########################',
+  '#.......##.............................##.......#',
+  '#.......DD........CORREDOR.SUPERIOR....DD.......#',
+  '#NICOLLE##.............................##..RYAN.#',
+  '#.......###############DDD###############.......#',
+  '#.......#####.......................#####.......#',
+  '#############.......................#############',
+  '#############....SALAO.DE.ESPERA....#############',
+  '#############.......................#############',
+  '#.......#####.......................#####.......#',
+  '#.......###############DDD###############.......#',
+  '#HENRIQU##.............................##.FELIPE#',
+  '#.......DD........CORREDOR.INFERIOR....DD.......#',
+  '#.......##.............................##.......#',
+  '#######################DDD#######################',
+  '#################...............#################',
+  'GGGGGGGGG########...............########GGGGGGGGG',
+  'GGGGGGGGG########....RECEPCAO...########GGGGGGGGG',
+  'GGGGGGGGG########.....ENRICO....########GGGGGGGGG',
+  'GGGGGGGGG###############################GGGGGGGGG',
 ];
 
-function criarGridVazio() {
-  const grid = [];
-  for (let y = 0; y < GRID_HEIGHT; y++) {
-    grid.push(new Array(GRID_WIDTH).fill('#'));
-  }
-  return grid;
-}
+export const GRID_WIDTH = NEW_MAP_LAYOUT[0].length;
+export const GRID_HEIGHT = NEW_MAP_LAYOUT.length;
+export const TILE_W = 64;
+export const TILE_H = 32;
 
-function preencherRetangulo(grid, rect, tipo) {
-  for (let y = rect.y; y < rect.y + rect.h; y++) {
-    for (let x = rect.x; x < rect.x + rect.w; x++) {
-      if (y >= 0 && y < GRID_HEIGHT && x >= 0 && x < GRID_WIDTH) {
-        grid[y][x] = tipo;
-      }
-    }
-  }
+// Retangulos de piso usados para posicionar rotulos dentro das salas.
+export const ROOMS = {
+  entrada: { id: 'entrada', nome: 'Entrada', tipo: 'entrada', rect: { x: 24, y: 19, w: 2, h: 2 } },
+  recepcao: { id: 'recepcao', nome: 'Recepcao Enrico', tipo: 'recepcao', rect: { x: 17, y: 20, w: 15, h: 4 } },
+  sala5: { id: 'sala5', nome: 'Consultorio Bianca', tipo: 'consultorio-grande', rect: { x: 17, y: 1, w: 15, h: 3 } },
+  sala1: { id: 'sala1', nome: 'Consultorio Nicolle', tipo: 'consultorio', rect: { x: 1, y: 6, w: 7, h: 5 } },
+  sala4: { id: 'sala4', nome: 'Consultorio Ryan', tipo: 'consultorio', rect: { x: 41, y: 6, w: 7, h: 5 } },
+  espera: { id: 'espera', nome: 'Salao de Espera', tipo: 'espera', rect: { x: 13, y: 10, w: 23, h: 9 } },
+  sala2: { id: 'sala2', nome: 'Consultorio Henrique', tipo: 'consultorio', rect: { x: 1, y: 14, w: 7, h: 5 } },
+  sala3: { id: 'sala3', nome: 'Consultorio Felipe', tipo: 'consultorio', rect: { x: 41, y: 14, w: 7, h: 5 } },
+};
+
+function sanitizarLinha(linha) {
+  return [...linha].map((tile) => (
+    tile === '#' || tile === 'G' || tile === 'D' || tile === '.' ? tile : '.'
+  ));
 }
 
 export function gerarGrid() {
-  const grid = criarGridVazio();
-
-  Object.values(ROOMS).forEach((sala) => {
-    const tipoTile = sala.tipo === 'jardim' ? 'G' : '.';
-    preencherRetangulo(grid, sala.rect, tipoTile);
-  });
-
-  CORREDORES.forEach((c) => preencherRetangulo(grid, c, '.'));
-
-  return grid;
+  return NEW_MAP_LAYOUT.map(sanitizarLinha);
 }
 
 export function tileEhCaminhavel(grid, x, y) {
   if (y < 0 || y >= GRID_HEIGHT || x < 0 || x >= GRID_WIDTH) return false;
-  const t = grid[y][x];
-  return t === '.';
+  return grid[y][x] === '.' || grid[y][x] === 'D';
 }
 
-// Posição central de uma sala (em tiles), útil para posicionar NPCs/objetos.
 export function centroDaSala(rect) {
   return {
     x: Math.floor(rect.x + rect.w / 2),
@@ -80,7 +68,6 @@ export function centroDaSala(rect) {
   };
 }
 
-// Converte coordenada de grid (x,y) em posição de tela isométrica (px).
 export function gridParaIso(x, y) {
   return {
     left: (x - y) * (TILE_W / 2),
@@ -88,15 +75,13 @@ export function gridParaIso(x, y) {
   };
 }
 
-// Posição inicial do jogador (na entrada da clínica).
-export const POSICAO_INICIAL = { x: 30, y: 36 };
+export const POSICAO_INICIAL = { x: 24, y: 21 };
 
-// NPCs: um especialista por consultório e Enrico na recepção.
 export const NPCS = [
-  { id: 'enrico', salaId: 'recepcao', nome: 'Enrico', tema: 'recepcao', cor: '#7fb3d5', spriteKey: 'npc-enrico', pos: centroDaSala(ROOMS.recepcao.rect) },
-  { id: 'nicolle', salaId: 'sala1', nome: 'Nicolle', tema: 'Skincare & Fundamentos', cor: '#7fb3d5', pos: centroDaSala(ROOMS.sala1.rect) },
-  { id: 'henrique', salaId: 'sala2', nome: 'Henrique', tema: 'Toxina Botulínica', cor: '#82c99a', pos: centroDaSala(ROOMS.sala2.rect) },
-  { id: 'felipe', salaId: 'sala3', nome: 'Felipe', tema: 'Bioestimuladores de Colágeno', cor: '#e0a96d', pos: centroDaSala(ROOMS.sala3.rect) },
-  { id: 'ryan', salaId: 'sala4', nome: 'Ryan', tema: 'Preenchimentos & Riscos Vasculares', cor: '#d98080', pos: centroDaSala(ROOMS.sala4.rect) },
-  { id: 'dra_bianca', salaId: 'sala5', nome: 'Dra. Bianca Cirilo', tema: 'Ácido Hialurônico Avançado', cor: '#c5a059', pos: centroDaSala(ROOMS.sala5.rect) },
+  { id: 'enrico', salaId: 'recepcao', nome: 'Enrico', tema: 'recepcao', cor: '#7fb3d5', spriteKey: 'npc-enrico', pos: { x: 24, y: 22 } },
+  { id: 'nicolle', salaId: 'sala1', nome: 'Nicolle', tema: 'Skincare & Fundamentos', cor: '#7fb3d5', pos: { x: 4, y: 8 } },
+  { id: 'henrique', salaId: 'sala2', nome: 'Henrique', tema: 'Toxina Botulínica', cor: '#82c99a', pos: { x: 4, y: 16 } },
+  { id: 'felipe', salaId: 'sala3', nome: 'Felipe', tema: 'Bioestimuladores de Colágeno', cor: '#e0a96d', pos: { x: 44, y: 16 } },
+  { id: 'ryan', salaId: 'sala4', nome: 'Ryan', tema: 'Preenchimentos & Riscos Vasculares', cor: '#d98080', pos: { x: 44, y: 8 } },
+  { id: 'dra_bianca', salaId: 'sala5', nome: 'Dra. Bianca Cirilo', tema: 'Ácido Hialurônico Avançado', cor: '#c5a059', pos: { x: 24, y: 2 } },
 ];

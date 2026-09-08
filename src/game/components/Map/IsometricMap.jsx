@@ -47,7 +47,7 @@ export default function IsometricMap({ children }) {
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         const t = grid[y][x];
-        if (t === '.' || t === 'G') {
+        if (t === '.' || t === 'D' || t === 'G') {
           arr.push({ x, y, tipo: tipoDaSalaNoTile(x, y) });
         }
       }
