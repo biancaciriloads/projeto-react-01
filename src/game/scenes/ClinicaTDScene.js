@@ -664,8 +664,8 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.collisionBoxes.forEach((box) => {
       const isSelected = box === this.selectedCollider;
       const body = box.zone?.body;
-      const left = body ? body.left : box.x - box.width / 2;
-      const top = body ? body.top : box.y - box.height / 2;
+      const left = body ? body.left : (box.x - box.width / 2);
+      const top = body ? body.top : (box.y - box.height / 2);
       const width = body ? body.width : box.width;
       const height = body ? body.height : box.height;
 
@@ -677,7 +677,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
         this.editorGraphics.lineStyle(2, 0xffff00, 1);
         this.editorGraphics.strokeRect(left, top, width, height);
 
-        // Indicador central
+        // Indicador central exato do corpo físico
         const centerX = body?.center ? body.center.x : (left + width / 2);
         const centerY = body?.center ? body.center.y : (top + height / 2);
         this.editorGraphics.fillStyle(0xffffff, 1);
