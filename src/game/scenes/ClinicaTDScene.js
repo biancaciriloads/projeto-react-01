@@ -83,12 +83,12 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.wallGroup = this.physics.add.staticGroup();
     this.physics.add.collider(this.player, this.wallGroup);
 
-    // Inicializa o Editor Visual Temporario de Colisoes (COLLISION_EDITOR)
-    this._initCollisionEditor();
-
     // Camera
     setupCameraRigTopDown(this, this.player, mapBg.displayWidth, mapBg.displayHeight);
     this.cameras.main.setZoom(1.5);
+
+    // Inicializa o Editor Visual Temporario de Colisoes (COLLISION_EDITOR)
+    this._initCollisionEditor();
 
     // NPCs e zonas de interacao
     this.interactionSystem = new InteractionSystem(this, this.player);
@@ -367,13 +367,16 @@ export default class ClinicaTDScene extends Phaser.Scene {
   _findColliderAt(wx, wy) {
     for (let i = this.collisionBoxes.length - 1; i >= 0; i--) {
       const b = this.collisionBoxes[i];
-      const halfW = b.width / 2;
-      const halfH = b.height / 2;
+      const body = b.zone?.body;
+      const left = body ? body.left : b.x - b.width / 2;
+      const top = body ? body.top : b.y - b.height / 2;
+      const width = body ? body.width : b.width;
+      const height = body ? body.height : b.height;
       if (
-        wx >= b.x - halfW &&
-        wx <= b.x + halfW &&
-        wy >= b.y - halfH &&
-        wy <= b.y + halfH
+        wx >= left &&
+        wx <= left + width &&
+        wy >= top &&
+        wy <= top + height
       ) {
         return b;
       }
@@ -385,8 +388,8 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.onEditorPointerDown = (pointer) => {
       if (!this.collisionEditorActive) return;
 
-      // Se clicou na barra de debug fixa no topo (Y < 32), não processa no mundo
-      if (pointer.y < 32) return;
+      // Se clicou na barra de debug fixa no topo (Y < 28), não processa no mundo
+      if (pointer.y < 28) return;
 
       const clicked = this._findColliderAt(pointer.worldX, pointer.worldY);
       if (clicked) {
@@ -440,29 +443,42 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown', this.onEditorKeyDown);
   }
 
+  _alignEditorDebugUI() {
+    if (!this.editorUiContainer) return;
+    const cam = this.cameras.main;
+    const zoom = cam.zoom || 1;
+    const cx = cam.width / 2;
+    const cy = cam.height / 2;
+    this.editorUiContainer.setPosition(cx * (1 - 1 / zoom), cy * (1 - 1 / zoom));
+    this.editorUiContainer.setScale(1 / zoom);
+  }
+
   _createEditorDebugUI() {
     this.editorUiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(300);
 
+    const barHeight = 28;
+
     // Barra de fundo fixa no topo
-    const barBg = this.add.rectangle(0, 0, 480, 26, 0x14141e, 0.94)
+    const barBg = this.add.rectangle(0, 0, 480, barHeight, 0x14141e, 0.94)
       .setOrigin(0, 0)
       .setInteractive();
     this.editorUiContainer.add(barBg);
 
-    const barBorder = this.add.rectangle(0, 26, 480, 1, 0xffcc00, 0.7).setOrigin(0, 0);
+    const barBorder = this.add.rectangle(0, barHeight, 480, 1, 0xffcc00, 0.7).setOrigin(0, 0);
     this.editorUiContainer.add(barBorder);
 
     const createButton = (x, y, label, color, onClick) => {
-      const btnBg = this.add.rectangle(x, y, 0, 14, color, 0.9).setOrigin(0, 0);
-      const btnTxt = this.add.text(x + 3, y + 2, label, {
+      const btnH = 13;
+      const btnTxt = this.add.text(x + 4, y + 2, label, {
         fontSize: '7px',
         fontFamily: 'monospace',
         color: '#ffffff',
         fontStyle: 'bold',
       });
-      const width = btnTxt.width + 6;
-      btnBg.width = width;
-      btnBg.setInteractive({ useHandCursor: true });
+      const width = Math.round(btnTxt.width + 8);
+      const btnBg = this.add.rectangle(x, y, width, btnH, color, 0.9)
+        .setOrigin(0, 0)
+        .setInteractive({ useHandCursor: true });
       btnBg.on('pointerdown', (ptr, lx, ly, event) => {
         event?.stopPropagation();
         onClick();
@@ -477,59 +493,62 @@ export default class ClinicaTDScene extends Phaser.Scene {
     let currX = 4;
 
     // Botão Alternar Modo Editor / Jogo Normal
-    this.editorToggleBtn = createButton(currX, 4, this.collisionEditorActive ? '🛠️ EDIT: ON' : '🎮 JOGO', 0x1f6feb, () => {
+    this.editorToggleBtn = createButton(currX, 3, this.collisionEditorActive ? '🛠️ EDIT: ON' : '🎮 JOGO', 0x1f6feb, () => {
       this._toggleEditorMode();
     });
     currX += this.editorToggleBtn.width + 4;
 
     // Botão + NOVO Collider
-    const newBtn = createButton(currX, 4, '+ NOVO', 0x238636, () => {
+    const newBtn = createButton(currX, 3, '+ NOVO', 0x238636, () => {
       this._createNewCollider();
     });
     currX += newBtn.width + 4;
 
     // Botão DUPLICAR
-    const dupBtn = createButton(currX, 4, '📋 DUPL', 0x8957e5, () => {
+    const dupBtn = createButton(currX, 3, '📋 DUPL', 0x8957e5, () => {
       this._duplicateSelectedCollider();
     });
     currX += dupBtn.width + 4;
 
     // Botão REMOVER
-    const delBtn = createButton(currX, 4, '🗑️ DEL', 0xda3633, () => {
+    const delBtn = createButton(currX, 3, '🗑️ DEL', 0xda3633, () => {
       this._removeSelectedCollider();
     });
     currX += delBtn.width + 4;
 
     // Ajuste de Tamanho W e H
-    const wDec = createButton(currX, 4, 'W-', 0x30363d, () => this._resizeSelectedCollider(-4, 0));
+    const wDec = createButton(currX, 3, 'W-', 0x30363d, () => this._resizeSelectedCollider(-4, 0));
     currX += wDec.width + 2;
-    const wInc = createButton(currX, 4, 'W+', 0x30363d, () => this._resizeSelectedCollider(4, 0));
+    const wInc = createButton(currX, 3, 'W+', 0x30363d, () => this._resizeSelectedCollider(4, 0));
     currX += wInc.width + 3;
-    const hDec = createButton(currX, 4, 'H-', 0x30363d, () => this._resizeSelectedCollider(0, -4));
+    const hDec = createButton(currX, 3, 'H-', 0x30363d, () => this._resizeSelectedCollider(0, -4));
     currX += hDec.width + 2;
-    const hInc = createButton(currX, 4, 'H+', 0x30363d, () => this._resizeSelectedCollider(0, 4));
+    const hInc = createButton(currX, 3, 'H+', 0x30363d, () => this._resizeSelectedCollider(0, 4));
     currX += hInc.width + 4;
 
     // Botão EXPORTAR
-    const expBtn = createButton(currX, 4, '💾 EXPORT', 0xd29922, () => {
+    const expBtn = createButton(currX, 3, '💾 EXPORT', 0xd29922, () => {
       this._exportColliders();
     });
     currX += expBtn.width + 4;
 
     // Texto de status e coordenadas do collider selecionado
-    this.editorStatusText = this.add.text(4, 16, '', {
+    this.editorStatusText = this.add.text(4, 18, '', {
       fontSize: '6px',
       fontFamily: 'monospace',
       color: '#ffdd66',
     });
     this.editorUiContainer.add(this.editorStatusText);
+
+    this._alignEditorDebugUI();
   }
 
   _toggleEditorMode() {
     this.collisionEditorActive = !this.collisionEditorActive;
     if (this.editorToggleBtn) {
       this.editorToggleBtn.btnTxt.setText(this.collisionEditorActive ? '🛠️ EDIT: ON' : '🎮 JOGO');
-      this.editorToggleBtn.btnBg.width = this.editorToggleBtn.btnTxt.width + 6;
+      const newWidth = Math.round(this.editorToggleBtn.btnTxt.width + 8);
+      this.editorToggleBtn.btnBg.setSize(newWidth, 13);
     }
     this.selectedCollider = null;
     this.isDraggingCollider = false;
@@ -615,10 +634,13 @@ export default class ClinicaTDScene extends Phaser.Scene {
     }
     if (this.selectedCollider) {
       const b = this.selectedCollider;
-      const left = Math.round(b.x - b.width / 2);
-      const top = Math.round(b.y - b.height / 2);
+      const body = b.zone?.body;
+      const left = Math.round(body ? body.left : b.x - b.width / 2);
+      const top = Math.round(body ? body.top : b.y - b.height / 2);
+      const width = Math.round(body ? body.width : b.width);
+      const height = Math.round(body ? body.height : b.height);
       this.editorStatusText.setText(
-        `SEL: ${b.label} | Centro: (${b.x}, ${b.y}) | Tam: ${b.width}x${b.height} | Top-Left: (${left}, ${top})`
+        `SEL: ${b.label} | Centro: (${b.x}, ${b.y}) | Tam: ${width}x${height} | Top-Left: (${left}, ${top})`
       );
     } else {
       this.editorStatusText.setText(
@@ -641,34 +663,39 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
     this.collisionBoxes.forEach((box) => {
       const isSelected = box === this.selectedCollider;
-      const left = box.x - box.width / 2;
-      const top = box.y - box.height / 2;
+      const body = box.zone?.body;
+      const left = body ? body.left : box.x - box.width / 2;
+      const top = body ? body.top : box.y - box.height / 2;
+      const width = body ? body.width : box.width;
+      const height = body ? body.height : box.height;
 
       if (isSelected) {
         // Preenchimento Amarelo / Dourado para o selecionado
         this.editorGraphics.fillStyle(0xffff00, 0.45);
-        this.editorGraphics.fillRect(left, top, box.width, box.height);
+        this.editorGraphics.fillRect(left, top, width, height);
 
         this.editorGraphics.lineStyle(2, 0xffff00, 1);
-        this.editorGraphics.strokeRect(left, top, box.width, box.height);
+        this.editorGraphics.strokeRect(left, top, width, height);
 
         // Indicador central
+        const centerX = body?.center ? body.center.x : (left + width / 2);
+        const centerY = body?.center ? body.center.y : (top + height / 2);
         this.editorGraphics.fillStyle(0xffffff, 1);
-        this.editorGraphics.fillRect(box.x - 2, box.y - 2, 4, 4);
+        this.editorGraphics.fillRect(centerX - 2, centerY - 2, 4, 4);
       } else {
         // Preenchimento Vermelho translúcido para os demais
         this.editorGraphics.fillStyle(0xff2222, 0.3);
-        this.editorGraphics.fillRect(left, top, box.width, box.height);
+        this.editorGraphics.fillRect(left, top, width, height);
 
         this.editorGraphics.lineStyle(1.5, 0xff0000, 0.85);
-        this.editorGraphics.strokeRect(left, top, box.width, box.height);
+        this.editorGraphics.strokeRect(left, top, width, height);
       }
 
       // Rótulo com dimensões e posição sobre o PNG
       const labelText = this.add.text(
         left + 2,
         top + 2,
-        `${box.label || ''}\n${box.width}x${box.height} (${box.x},${box.y})`,
+        `${box.label || ''}\n${width}x${height} (${Math.round(left)},${Math.round(top)})`,
         {
           fontSize: '5px',
           fontFamily: 'monospace',
