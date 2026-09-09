@@ -54,7 +54,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.player = new PlayerTopDown(this, spawnPx.cx, spawnPx.cy);
 
     // Escala do jogador e hitbox nos pes
-    this.player.setScale(0.5);
+    this.player.setScale(0.65);
     if (this.player.body) {
       this.player.body.setSize(14, 14);
       this.player.body.setOffset(1, 18);
@@ -66,6 +66,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
     // Camera
     setupCameraRigTopDown(this, this.player, mapBg.displayWidth, mapBg.displayHeight);
+    this.cameras.main.setZoom(1.5);
 
     // NPCs e zonas de interacao
     this.interactionSystem = new InteractionSystem(this, this.player);
@@ -98,15 +99,23 @@ export default class ClinicaTDScene extends Phaser.Scene {
   /** Cria sprites de NPC e registra no InteractionSystem. */
   _buildNPCs() {
     NPCS.forEach((npc) => {
-      const px = this._gridToPx(npc.pos.x, npc.pos.y);
+      // Usa posPx (pixels absolutos) se definido; caso contrario converte do grid
+      const cx = npc.posPx ? npc.posPx.x : this._gridToPx(npc.pos.x, npc.pos.y).cx;
+      const cy = npc.posPx ? npc.posPx.y : this._gridToPx(npc.pos.x, npc.pos.y).cy;
 
       const visual = npc.spriteKey
-        ? this.add.sprite(px.cx, px.cy, npc.spriteKey, 0).setScale(0.5).setOrigin(0.5, 1)
-        : this.add.circle(px.cx, px.cy, 6, Phaser.Display.Color.HexStringToColor(npc.cor).color);
+        ? this.add.sprite(cx, cy, npc.spriteKey, 0).setScale(0.65).setOrigin(0.5, 1)
+        : this.add.circle(cx, cy, 6, Phaser.Display.Color.HexStringToColor(npc.cor).color);
       visual.setDepth(DEPTH.PROPS_FRONT);
 
+      // Aplica corpo de fisica nos NPCs que o possuem
+      if (visual.body) {
+        visual.body.setSize(14, 14);
+        visual.body.setOffset(1, 18);
+      }
+
       // Nome do NPC
-      this.add.text(px.cx, px.cy - 10, npc.nome, {
+      this.add.text(cx, cy - 10, npc.nome, {
         fontSize: '4px',
         fontFamily: 'monospace',
         color: '#ffffff',
@@ -118,8 +127,8 @@ export default class ClinicaTDScene extends Phaser.Scene {
       const label = npc.isEspelho ? 'ESPELHO [X]' : `FALAR COM ${npc.nome.toUpperCase()} [X]`;
       this.interactionSystem.register(
         npc.id,
-        px.cx,
-        px.cy,
+        cx,
+        cy,
         { width: 32, height: 32 },
         npc.tema,   // type
         label,      // label
