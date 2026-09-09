@@ -31,6 +31,9 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
   preload() {
     this.load.image('mapa_clinica', '/assets/mapa/mapa_clinica.png');
+    this.load.image('npc_bianca', '/assets/sprites/EspecialistaMestreBiancaCirilo.png');
+    this.load.image('npc_henrique', '/assets/sprites/Especialista2Henrique.png');
+    this.load.image('npc_felipe', '/assets/sprites/Especialista3Felipe.png');
   }
 
   create() {
