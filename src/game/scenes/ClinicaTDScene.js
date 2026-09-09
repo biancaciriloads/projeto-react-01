@@ -39,8 +39,9 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
     createAllTopDownAnimations(this);
 
-    const mapBg = this.add.image(0, 0, 'mapa_clinica').setOrigin(0, 0);
-    mapBg.setDepth(0);
+    this.mapBg = this.add.image(0, 0, 'mapa_clinica').setOrigin(0, 0);
+    this.mapBg.setDepth(0);
+    const mapBg = this.mapBg;
 
     // Bounds estritos baseados no tamanho real da imagem
     this.cameras.main.setBounds(0, 0, mapBg.displayWidth, mapBg.displayHeight);
@@ -98,21 +99,18 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
   /** Cria sprites de NPC e registra no InteractionSystem. */
   _buildNPCs() {
+    const { displayWidth: W, displayHeight: H } = this.mapBg;
+
     NPCS.forEach((npc) => {
-      // Usa posPx (pixels absolutos) se definido; caso contrario converte do grid
-      const cx = npc.posPx ? npc.posPx.x : this._gridToPx(npc.pos.x, npc.pos.y).cx;
-      const cy = npc.posPx ? npc.posPx.y : this._gridToPx(npc.pos.x, npc.pos.y).cy;
+      // Posição diretamente como fração do tamanho real do background.
+      // Não há conversão de grid — os valores em mapData.js são a fonte de verdade.
+      const cx = W * npc.frac.x;
+      const cy = H * npc.frac.y;
 
       const visual = npc.spriteKey
         ? this.add.sprite(cx, cy, npc.spriteKey, 0).setScale(0.65).setOrigin(0.5, 1)
         : this.add.circle(cx, cy, 6, Phaser.Display.Color.HexStringToColor(npc.cor).color);
       visual.setDepth(DEPTH.PROPS_FRONT);
-
-      // Aplica corpo de fisica nos NPCs que o possuem
-      if (visual.body) {
-        visual.body.setSize(14, 14);
-        visual.body.setOffset(1, 18);
-      }
 
       // Nome do NPC
       this.add.text(cx, cy - 10, npc.nome, {
@@ -130,12 +128,14 @@ export default class ClinicaTDScene extends Phaser.Scene {
         cx,
         cy,
         { width: 32, height: 32 },
-        npc.tema,   // type
-        label,      // label
+        npc.tema,
+        label,
       );
       this.interactionSystem.setData(npc.id, { npcId: npc.id, salaId: npc.salaId, tema: npc.tema, nome: npc.nome });
     });
   }
+
+
 
   // ---- Helpers -------------------------------------------------------
 

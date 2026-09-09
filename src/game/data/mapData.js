@@ -86,11 +86,14 @@ export function gridParaIso(x, y) {
 
 export const POSICAO_INICIAL = { x: 24, y: 22 };
 
+// Posições como fração do tamanho real de mapa_clinica.png (displayWidth × displayHeight).
+// cx = mapBg.displayWidth  * frac.x
+// cy = mapBg.displayHeight * frac.y
 export const NPCS = [
-  { id: 'enrico', salaId: 'recepcao', nome: 'Enrico', tema: 'recepcao', cor: '#7fb3d5', spriteKey: 'npc-enrico', pos: { x: 24, y: 26 } },
-  { id: 'nicolle', salaId: 'sala1', nome: 'Nicolle', tema: 'Skincare & Fundamentos', cor: '#7fb3d5', pos: { x: 5, y: 9 }, posPx: { x: 140, y: 310 } },
-  { id: 'henrique', salaId: 'sala2', nome: 'Henrique', tema: 'Toxina Botulínica', cor: '#82c99a', pos: { x: 5, y: 20 }, posPx: { x: 140, y: 550 } },
-  { id: 'felipe', salaId: 'sala3', nome: 'Felipe', tema: 'Bioestimuladores de Colágeno', cor: '#e0a96d', pos: { x: 43, y: 20 }, posPx: { x: 500, y: 550 } },
-  { id: 'ryan', salaId: 'sala4', nome: 'Ryan', tema: 'Preenchimentos & Riscos Vasculares', cor: '#d98080', pos: { x: 43, y: 9 }, posPx: { x: 500, y: 310 } },
-  { id: 'dra_bianca', salaId: 'sala5', nome: 'Dra. Bianca Cirilo', tema: 'Ácido Hialurônico Avançado', cor: '#c5a059', pos: { x: 24, y: 4 }, posPx: { x: 232, y: 168 } },
+  { id: 'dra_bianca', salaId: 'sala5',   nome: 'Dra. Bianca Cirilo', tema: 'Ácido Hialurônico Avançado',      cor: '#c5a059', frac: { x: 0.35, y: 0.15 } },
+  { id: 'enrico',    salaId: 'recepcao', nome: 'Enrico',              tema: 'recepcao',                        cor: '#7fb3d5', spriteKey: 'npc-enrico', frac: { x: 0.42, y: 0.85 } },
+  { id: 'nicolle',   salaId: 'sala1',    nome: 'Nicolle',             tema: 'Skincare & Fundamentos',          cor: '#7fb3d5', frac: { x: 0.18, y: 0.32 } },
+  { id: 'henrique',  salaId: 'sala2',    nome: 'Henrique',            tema: 'Toxina Botulínica',               cor: '#82c99a', frac: { x: 0.82, y: 0.32 } },
+  { id: 'felipe',    salaId: 'sala3',    nome: 'Felipe',              tema: 'Bioestimuladores de Colágeno',    cor: '#e0a96d', frac: { x: 0.18, y: 0.65 } },
+  { id: 'ryan',      salaId: 'sala4',    nome: 'Ryan',                tema: 'Preenchimentos & Riscos Vasculares', cor: '#d98080', frac: { x: 0.82, y: 0.65 } },
 ];
