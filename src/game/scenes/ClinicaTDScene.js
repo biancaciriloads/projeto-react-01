@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { SCENE_KEYS } from '../../constants/sceneKeys';
 import { TILE_SIZE, DEPTH } from '../../constants/gameSettings';
-import { GRID_WIDTH, GRID_HEIGHT, gerarGrid, POSICAO_INICIAL, NPCS, ROOMS } from '../data/mapData';
+import { POSICAO_INICIAL, NPCS, ROOMS } from '../data/mapData';
 import { createAllTopDownAnimations } from '../systems/AnimationFactory';
 import { setupCameraRigTopDown } from '../systems/CameraRig';
 import PlayerTopDown from '../entities/PlayerTopDown';
@@ -11,6 +11,7 @@ import { useGameStore } from '../../store/useGameStore';
 import { dialogueData } from '../../data/dialogueData';
 import { quizData } from '../../data/quizData';
 import AdminDecoratorSystem from '../systems/AdminDecoratorSystem';
+
 
 /**
  * ClinicaTDScene
@@ -28,32 +29,43 @@ export default class ClinicaTDScene extends Phaser.Scene {
     super(SCENE_KEYS.CLINICA_TD);
   }
 
+  preload() {
+    this.load.image('mapa_clinica', '/assets/mapa/mapa_clinica.png');
+  }
+
   create() {
     // Fisica sem gravidade (top-down)
     this.physics.world.gravity.y = 0;
 
-    const grid = gerarGrid();
-    const worldW = GRID_WIDTH * TILE_SIZE;
-    const worldH = GRID_HEIGHT * TILE_SIZE;
-    this.physics.world.setBounds(0, 0, worldW, worldH);
-
     createAllTopDownAnimations(this);
 
-    // Grupos fisicos
-    this.wallGroup  = this.physics.add.staticGroup();
-    this.floorGroup = this.add.group(); // decorativo
+    const mapBg = this.add.image(0, 0, 'mapa_clinica').setOrigin(0, 0);
+    mapBg.setDepth(0);
 
-    this._buildTileGrid(grid);
+    // Bounds estritos baseados no tamanho real da imagem
+    this.cameras.main.setBounds(0, 0, mapBg.displayWidth, mapBg.displayHeight);
+    this.physics.world.setBounds(0, 0, mapBg.displayWidth, mapBg.displayHeight);
+
     this._buildRoomLabels();
     this.adminDecoratorSystem = new AdminDecoratorSystem(this);
 
     // Spawn do jogador
     const spawnPx = this._gridToPx(POSICAO_INICIAL.x, POSICAO_INICIAL.y);
     this.player = new PlayerTopDown(this, spawnPx.cx, spawnPx.cy);
+
+    // Escala do jogador e hitbox nos pes
+    this.player.setScale(0.5);
+    if (this.player.body) {
+      this.player.body.setSize(14, 14);
+      this.player.body.setOffset(1, 18);
+    }
+
+    // Grupo de colisao estatico
+    this.wallGroup = this.physics.add.staticGroup();
     this.physics.add.collider(this.player, this.wallGroup);
 
     // Camera
-    setupCameraRigTopDown(this, this.player, worldW, worldH);
+    setupCameraRigTopDown(this, this.player, mapBg.displayWidth, mapBg.displayHeight);
 
     // NPCs e zonas de interacao
     this.interactionSystem = new InteractionSystem(this, this.player);
@@ -66,50 +78,6 @@ export default class ClinicaTDScene extends Phaser.Scene {
 
     this.events.once('shutdown', this._cleanup, this);
     this.events.once('destroy',  this._cleanup, this);
-  }
-
-  // ---- Construcao do grid ----------------------------------------
-
-  _buildTileGrid(grid) {
-    const TS = TILE_SIZE;
-    const floorFrame = 0;
-    const wallFrame = 1;
-
-    for (let row = 0; row < GRID_HEIGHT; row++) {
-      for (let col = 0; col < GRID_WIDTH; col++) {
-        const cell = grid[row][col];
-        const px   = col * TS;
-        const py   = row * TS;
-
-        if (cell === '#' || cell === 'G') {
-          const wall = this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, 0x3a302a);
-          wall.setAlpha(0);
-          wall.setDepth(DEPTH.PLATFORMS);
-          this.physics.add.existing(wall, true);
-          this.wallGroup.add(wall);
-        }
-
-        if (cell === 'G') {
-          this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', floorFrame)
-            .setDisplaySize(TS, TS)
-            .setTint(0xb8d8a8)
-            .setDepth(DEPTH.BACKGROUND);
-        } else if (cell === '#') {
-          this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', wallFrame)
-            .setDisplaySize(TS, TS)
-            .setDepth(DEPTH.PLATFORMS + 1);
-        } else {
-          // Piso caminhavel
-          this.add.image(px + TS / 2, py + TS / 2, 'tiles-clinic-48', floorFrame)
-            .setDisplaySize(TS, TS)
-            .setDepth(DEPTH.BACKGROUND);
-
-          // Borda sutil entre tiles
-          const border = this.add.rectangle(px + TS / 2, py + TS / 2, TS, TS, 0x000000, 0.06);
-          border.setDepth(DEPTH.BACKGROUND + 1);
-        }
-      }
-    }
   }
 
   /** Adiciona nome de cada sala sobre o piso. */

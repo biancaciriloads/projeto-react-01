@@ -157,10 +157,10 @@ def gerar_relatorio(resultados):
 
 # ── Execução ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    print("╔══════════════════════════════════════════════════════════╗")
-    print("║   slice_sprites.py — Fatiamento de Sprites de Móveis    ║")
-    print("║   Projeto: RPG 2D Clínica Estética BC                   ║")
-    print("╚══════════════════════════════════════════════════════════╝")
+    print("============================================================")
+    print("    slice_sprites.py - Fatiamento de Sprites de Moveis     ")
+    print("    Projeto: RPG 2D Clinica Estetica BC                    ")
+    print("============================================================")
 
     resultados = []
     for sheet in SHEETS:
@@ -177,4 +177,4 @@ if __name__ == "__main__":
         })
 
     gerar_relatorio(resultados)
-    print("Fatiamento concluído. Verifique public/assets/furniture/ para os resultados.")
+    print("Fatiamento concluido. Verifique public/assets/furniture/ para os resultados.")
