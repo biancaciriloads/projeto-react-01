@@ -81,6 +81,11 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.wallGroup = this.physics.add.staticGroup();
     this.physics.add.collider(this.player, this.wallGroup);
 
+    // Colisao frontal da mesa da Dra. Bianca
+    const deskZone = this.add.zone(mapBg.displayWidth * 0.355, mapBg.displayHeight * 0.155, 64, 24).setOrigin(0.5, 0.5);
+    this.physics.add.existing(deskZone, true);
+    this.wallGroup.add(deskZone);
+
     // Camera
     setupCameraRigTopDown(this, this.player, mapBg.displayWidth, mapBg.displayHeight);
     this.cameras.main.setZoom(1.5);
@@ -238,16 +243,17 @@ export default class ClinicaTDScene extends Phaser.Scene {
     });
 
     // 6. Dra. Bianca Cirilo - Sala 5 (Ácido Hialurônico Avançado / Sala Premium)
-    this._createNPC({
+    const npcBianca = this._createNPC({
       id: 'dra_bianca',
       nome: 'Dra. Bianca Cirilo',
-      fracX: 0.35,
+      fracX: 0.355,
       fracY: 0.15,
       spriteKey: 'npc_bianca',
       tema: 'Ácido Hialurônico Avançado',
       salaId: 'sala5',
       cor: '#c5a059',
     });
+    npcBianca.setDepth(5);
   }
 
 
