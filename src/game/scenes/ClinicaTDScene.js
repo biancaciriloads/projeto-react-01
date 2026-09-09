@@ -12,6 +12,8 @@ import { dialogueData } from '../../data/dialogueData';
 import { quizData } from '../../data/quizData';
 import AdminDecoratorSystem from '../systems/AdminDecoratorSystem';
 
+const COLLISION_EDITOR = true;
+
 
 /**
  * ClinicaTDScene
@@ -77,14 +79,12 @@ export default class ClinicaTDScene extends Phaser.Scene {
       this.player.body.setOffset(1, 18);
     }
 
-    // Grupo de colisao estatico
+    // Grupo de colisao estatico com Arcade Physics
     this.wallGroup = this.physics.add.staticGroup();
     this.physics.add.collider(this.player, this.wallGroup);
 
-    // Colisao frontal da mesa da Dra. Bianca
-    const deskZone = this.add.zone(mapBg.displayWidth * 0.355, mapBg.displayHeight * 0.155, 64, 24).setOrigin(0.5, 0.5);
-    this.physics.add.existing(deskZone, true);
-    this.wallGroup.add(deskZone);
+    // Inicializa o Editor Visual Temporario de Colisoes (COLLISION_EDITOR)
+    this._initCollisionEditor();
 
     // Camera
     setupCameraRigTopDown(this, this.player, mapBg.displayWidth, mapBg.displayHeight);
@@ -304,10 +304,393 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this._cleanedUp = true;
     this.interactionSystem?.destroy();
     this.adminDecoratorSystem?.destroy();
+    this._cleanupCollisionEditor();
   }
 
   update(time, delta) {
     if (this.player) this.player.update(time, delta);
     // InteractionSystem ja se registra em scene.events.on('update') internamente
+  }
+
+  // =========================================================================
+  // EDITOR VISUAL TEMPORÁRIO DE COLISÕES (In-Scene)
+  // =========================================================================
+
+  _initCollisionEditor() {
+    this.collisionEditorActive = COLLISION_EDITOR;
+    this.selectedCollider = null;
+    this.isDraggingCollider = false;
+    this.dragOffset = { x: 0, y: 0 };
+
+    // Lista de caixas de colisão no mapa (944x928)
+    // Inicializa com a colisão frontal da mesa da Bianca
+    this.collisionBoxes = [
+      {
+        id: 1,
+        label: 'Mesa Dra. Bianca',
+        x: Math.round(this.mapBg.displayWidth * 0.355), // 335
+        y: Math.round(this.mapBg.displayHeight * 0.155), // 144
+        width: 64,
+        height: 24,
+      },
+    ];
+
+    // Registra os colliders estáticos no wallGroup
+    this.collisionBoxes.forEach((box) => this._syncBoxPhysics(box));
+
+    // Camada gráfica para desenhar as caixas de colisão sobre o mapa
+    this.editorGraphics = this.add.graphics().setDepth(200);
+    this.editorWorldLabels = [];
+
+    // Interface de debug fixa na tela (scrollFactor 0)
+    this._createEditorDebugUI();
+
+    // Eventos de entrada para seleção e arrasto
+    this._bindEditorInputEvents();
+
+    // Renderiza inicialmente
+    this._renderCollisionEditor();
+  }
+
+  /** Cria ou sincroniza a zona física estática no wallGroup. */
+  _syncBoxPhysics(box) {
+    if (box.zone && box.zone.destroy) {
+      box.zone.destroy();
+    }
+    const zone = this.add.zone(box.x, box.y, box.width, box.height).setOrigin(0.5, 0.5);
+    this.physics.add.existing(zone, true);
+    this.wallGroup.add(zone);
+    box.zone = zone;
+  }
+
+  /** Identifica se o ponteiro clicou no interior de algum collider existente. */
+  _findColliderAt(wx, wy) {
+    for (let i = this.collisionBoxes.length - 1; i >= 0; i--) {
+      const b = this.collisionBoxes[i];
+      const halfW = b.width / 2;
+      const halfH = b.height / 2;
+      if (
+        wx >= b.x - halfW &&
+        wx <= b.x + halfW &&
+        wy >= b.y - halfH &&
+        wy <= b.y + halfH
+      ) {
+        return b;
+      }
+    }
+    return null;
+  }
+
+  _bindEditorInputEvents() {
+    this.onEditorPointerDown = (pointer) => {
+      if (!this.collisionEditorActive) return;
+
+      // Se clicou na barra de debug fixa no topo (Y < 32), não processa no mundo
+      if (pointer.y < 32) return;
+
+      const clicked = this._findColliderAt(pointer.worldX, pointer.worldY);
+      if (clicked) {
+        this.selectedCollider = clicked;
+        this.isDraggingCollider = true;
+        this.dragOffset = {
+          x: pointer.worldX - clicked.x,
+          y: pointer.worldY - clicked.y,
+        };
+      } else {
+        this.selectedCollider = null;
+        this.isDraggingCollider = false;
+      }
+      this._renderCollisionEditor();
+    };
+
+    this.onEditorPointerMove = (pointer) => {
+      if (!this.collisionEditorActive || !this.isDraggingCollider || !this.selectedCollider) return;
+
+      // Move o collider selecionado arrastando o seu interior
+      this.selectedCollider.x = Math.round(pointer.worldX - this.dragOffset.x);
+      this.selectedCollider.y = Math.round(pointer.worldY - this.dragOffset.y);
+
+      this._syncBoxPhysics(this.selectedCollider);
+      this._renderCollisionEditor();
+    };
+
+    this.onEditorPointerUp = () => {
+      if (this.isDraggingCollider) {
+        this.isDraggingCollider = false;
+        this._renderCollisionEditor();
+      }
+    };
+
+    this.input.on('pointerdown', this.onEditorPointerDown);
+    this.input.on('pointermove', this.onEditorPointerMove);
+    this.input.on('pointerup', this.onEditorPointerUp);
+
+    // Tecla F2 para alternar rapidamente entre modo editor e jogo
+    this.onEditorKeyDown = (event) => {
+      if (event.key === 'F2') {
+        this._toggleEditorMode();
+      } else if (this.collisionEditorActive && this.selectedCollider) {
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+          this._removeSelectedCollider();
+        } else if (event.key.toLowerCase() === 'd') {
+          this._duplicateSelectedCollider();
+        }
+      }
+    };
+    this.input.keyboard?.on('keydown', this.onEditorKeyDown);
+  }
+
+  _createEditorDebugUI() {
+    this.editorUiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(300);
+
+    // Barra de fundo fixa no topo
+    const barBg = this.add.rectangle(0, 0, 480, 26, 0x14141e, 0.94)
+      .setOrigin(0, 0)
+      .setInteractive();
+    this.editorUiContainer.add(barBg);
+
+    const barBorder = this.add.rectangle(0, 26, 480, 1, 0xffcc00, 0.7).setOrigin(0, 0);
+    this.editorUiContainer.add(barBorder);
+
+    const createButton = (x, y, label, color, onClick) => {
+      const btnBg = this.add.rectangle(x, y, 0, 14, color, 0.9).setOrigin(0, 0);
+      const btnTxt = this.add.text(x + 3, y + 2, label, {
+        fontSize: '7px',
+        fontFamily: 'monospace',
+        color: '#ffffff',
+        fontStyle: 'bold',
+      });
+      const width = btnTxt.width + 6;
+      btnBg.width = width;
+      btnBg.setInteractive({ useHandCursor: true });
+      btnBg.on('pointerdown', (ptr, lx, ly, event) => {
+        event?.stopPropagation();
+        onClick();
+      });
+      btnBg.on('pointerover', () => btnBg.setAlpha(1));
+      btnBg.on('pointerout', () => btnBg.setAlpha(0.9));
+
+      this.editorUiContainer.add([btnBg, btnTxt]);
+      return { btnBg, btnTxt, width };
+    };
+
+    let currX = 4;
+
+    // Botão Alternar Modo Editor / Jogo Normal
+    this.editorToggleBtn = createButton(currX, 4, this.collisionEditorActive ? '🛠️ EDIT: ON' : '🎮 JOGO', 0x1f6feb, () => {
+      this._toggleEditorMode();
+    });
+    currX += this.editorToggleBtn.width + 4;
+
+    // Botão + NOVO Collider
+    const newBtn = createButton(currX, 4, '+ NOVO', 0x238636, () => {
+      this._createNewCollider();
+    });
+    currX += newBtn.width + 4;
+
+    // Botão DUPLICAR
+    const dupBtn = createButton(currX, 4, '📋 DUPL', 0x8957e5, () => {
+      this._duplicateSelectedCollider();
+    });
+    currX += dupBtn.width + 4;
+
+    // Botão REMOVER
+    const delBtn = createButton(currX, 4, '🗑️ DEL', 0xda3633, () => {
+      this._removeSelectedCollider();
+    });
+    currX += delBtn.width + 4;
+
+    // Ajuste de Tamanho W e H
+    const wDec = createButton(currX, 4, 'W-', 0x30363d, () => this._resizeSelectedCollider(-4, 0));
+    currX += wDec.width + 2;
+    const wInc = createButton(currX, 4, 'W+', 0x30363d, () => this._resizeSelectedCollider(4, 0));
+    currX += wInc.width + 3;
+    const hDec = createButton(currX, 4, 'H-', 0x30363d, () => this._resizeSelectedCollider(0, -4));
+    currX += hDec.width + 2;
+    const hInc = createButton(currX, 4, 'H+', 0x30363d, () => this._resizeSelectedCollider(0, 4));
+    currX += hInc.width + 4;
+
+    // Botão EXPORTAR
+    const expBtn = createButton(currX, 4, '💾 EXPORT', 0xd29922, () => {
+      this._exportColliders();
+    });
+    currX += expBtn.width + 4;
+
+    // Texto de status e coordenadas do collider selecionado
+    this.editorStatusText = this.add.text(4, 16, '', {
+      fontSize: '6px',
+      fontFamily: 'monospace',
+      color: '#ffdd66',
+    });
+    this.editorUiContainer.add(this.editorStatusText);
+  }
+
+  _toggleEditorMode() {
+    this.collisionEditorActive = !this.collisionEditorActive;
+    if (this.editorToggleBtn) {
+      this.editorToggleBtn.btnTxt.setText(this.collisionEditorActive ? '🛠️ EDIT: ON' : '🎮 JOGO');
+      this.editorToggleBtn.btnBg.width = this.editorToggleBtn.btnTxt.width + 6;
+    }
+    this.selectedCollider = null;
+    this.isDraggingCollider = false;
+    this._renderCollisionEditor();
+  }
+
+  _createNewCollider() {
+    // Posiciona no centro visível da câmera ou ponto padrão
+    const cx = Math.round(this.cameras.main.worldView.centerX || 472);
+    const cy = Math.round(this.cameras.main.worldView.centerY || 464);
+    const newBox = {
+      id: Date.now(),
+      label: `Colisor ${this.collisionBoxes.length + 1}`,
+      x: cx,
+      y: cy,
+      width: 48,
+      height: 24,
+    };
+    this.collisionBoxes.push(newBox);
+    this._syncBoxPhysics(newBox);
+    this.selectedCollider = newBox;
+    this._renderCollisionEditor();
+  }
+
+  _duplicateSelectedCollider() {
+    if (!this.selectedCollider) return;
+    const newBox = {
+      id: Date.now(),
+      label: `${this.selectedCollider.label} (Cópia)`,
+      x: this.selectedCollider.x + 16,
+      y: this.selectedCollider.y + 16,
+      width: this.selectedCollider.width,
+      height: this.selectedCollider.height,
+    };
+    this.collisionBoxes.push(newBox);
+    this._syncBoxPhysics(newBox);
+    this.selectedCollider = newBox;
+    this._renderCollisionEditor();
+  }
+
+  _removeSelectedCollider() {
+    if (!this.selectedCollider) return;
+    if (this.selectedCollider.zone && this.selectedCollider.zone.destroy) {
+      this.selectedCollider.zone.destroy();
+    }
+    this.collisionBoxes = this.collisionBoxes.filter((b) => b !== this.selectedCollider);
+    this.selectedCollider = null;
+    this._renderCollisionEditor();
+  }
+
+  _resizeSelectedCollider(deltaW, deltaH) {
+    if (!this.selectedCollider) return;
+    this.selectedCollider.width = Math.max(8, this.selectedCollider.width + deltaW);
+    this.selectedCollider.height = Math.max(8, this.selectedCollider.height + deltaH);
+    this._syncBoxPhysics(this.selectedCollider);
+    this._renderCollisionEditor();
+  }
+
+  _exportColliders() {
+    const list = this.collisionBoxes.map(({ label, x, y, width, height }) => ({
+      label,
+      x,
+      y,
+      width,
+      height,
+    }));
+    const jsonStr = JSON.stringify(list, null, 2);
+    console.log('[ClinicaTDScene] Colisões Atuais:\n', jsonStr);
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(jsonStr).catch(() => {});
+    }
+    if (this.editorStatusText) {
+      this.editorStatusText.setText('✅ JSON copiado para o Clipboard e exibido no console (F12)!');
+      this.time.delayedCall(2500, () => this._updateStatusText());
+    }
+  }
+
+  _updateStatusText() {
+    if (!this.editorStatusText) return;
+    if (!this.collisionEditorActive) {
+      this.editorStatusText.setText('MODO JOGO ATIVO. Colliders invisíveis. Clique [JOGO] ou F2 para abrir o editor.');
+      return;
+    }
+    if (this.selectedCollider) {
+      const b = this.selectedCollider;
+      const left = Math.round(b.x - b.width / 2);
+      const top = Math.round(b.y - b.height / 2);
+      this.editorStatusText.setText(
+        `SEL: ${b.label} | Centro: (${b.x}, ${b.y}) | Tam: ${b.width}x${b.height} | Top-Left: (${left}, ${top})`
+      );
+    } else {
+      this.editorStatusText.setText(
+        `EDITOR ATIVO (${this.collisionBoxes.length} colliders). Clique para selecionar e arraste para mover.`
+      );
+    }
+  }
+
+  _renderCollisionEditor() {
+    this.editorGraphics.clear();
+
+    // Remove rótulos visuais de mundo anteriores
+    this.editorWorldLabels.forEach((lbl) => lbl.destroy());
+    this.editorWorldLabels = [];
+
+    this._updateStatusText();
+
+    // Se o editor estiver desativado, colliders permanecem 100% invisíveis
+    if (!this.collisionEditorActive) return;
+
+    this.collisionBoxes.forEach((box) => {
+      const isSelected = box === this.selectedCollider;
+      const left = box.x - box.width / 2;
+      const top = box.y - box.height / 2;
+
+      if (isSelected) {
+        // Preenchimento Amarelo / Dourado para o selecionado
+        this.editorGraphics.fillStyle(0xffff00, 0.45);
+        this.editorGraphics.fillRect(left, top, box.width, box.height);
+
+        this.editorGraphics.lineStyle(2, 0xffff00, 1);
+        this.editorGraphics.strokeRect(left, top, box.width, box.height);
+
+        // Indicador central
+        this.editorGraphics.fillStyle(0xffffff, 1);
+        this.editorGraphics.fillRect(box.x - 2, box.y - 2, 4, 4);
+      } else {
+        // Preenchimento Vermelho translúcido para os demais
+        this.editorGraphics.fillStyle(0xff2222, 0.3);
+        this.editorGraphics.fillRect(left, top, box.width, box.height);
+
+        this.editorGraphics.lineStyle(1.5, 0xff0000, 0.85);
+        this.editorGraphics.strokeRect(left, top, box.width, box.height);
+      }
+
+      // Rótulo com dimensões e posição sobre o PNG
+      const labelText = this.add.text(
+        left + 2,
+        top + 2,
+        `${box.label || ''}\n${box.width}x${box.height} (${box.x},${box.y})`,
+        {
+          fontSize: '5px',
+          fontFamily: 'monospace',
+          color: isSelected ? '#ffff00' : '#ffffff',
+          backgroundColor: '#000000bb',
+          padding: { x: 2, y: 1 },
+        }
+      ).setDepth(201);
+      this.editorWorldLabels.push(labelText);
+    });
+  }
+
+  _cleanupCollisionEditor() {
+    this.input.off('pointerdown', this.onEditorPointerDown);
+    this.input.off('pointermove', this.onEditorPointerMove);
+    this.input.off('pointerup', this.onEditorPointerUp);
+    if (this.onEditorKeyDown) {
+      this.input.keyboard?.off('keydown', this.onEditorKeyDown);
+    }
+
+    this.editorGraphics?.destroy();
+    this.editorWorldLabels?.forEach((lbl) => lbl.destroy());
+    this.editorUiContainer?.destroy();
   }
 }
