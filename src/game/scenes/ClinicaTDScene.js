@@ -342,7 +342,7 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.editorGraphics = this.add.graphics().setDepth(200);
     this.editorWorldLabels = [];
 
-    // Interface de debug fixa na tela (scrollFactor 0)
+    // Interface de debug fixa na tela via câmera de UI dedicada
     this._createEditorDebugUI();
 
     // Eventos de entrada para seleção e arrasto
@@ -388,8 +388,8 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.onEditorPointerDown = (pointer) => {
       if (!this.collisionEditorActive) return;
 
-      // Se clicou na barra de debug fixa no topo (Y < 28), não processa no mundo
-      if (pointer.y < 28) return;
+      // Se clicou na barra de debug fixa no topo (Y < 38), não processa no mundo
+      if (pointer.y < 38) return;
 
       const clicked = this._findColliderAt(pointer.worldX, pointer.worldY);
       if (clicked) {
@@ -443,112 +443,149 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown', this.onEditorKeyDown);
   }
 
-  _alignEditorDebugUI() {
-    if (!this.editorUiContainer) return;
-    const cam = this.cameras.main;
-    const zoom = cam.zoom || 1;
-    const cx = cam.width / 2;
-    const cy = cam.height / 2;
-    this.editorUiContainer.setPosition(cx * (1 - 1 / zoom), cy * (1 - 1 / zoom));
-    this.editorUiContainer.setScale(1 / zoom);
-  }
-
   _createEditorDebugUI() {
-    this.editorUiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(300);
+    // ------------------------------------------------------------------
+    // Câmera de UI dedicada — zoom=1, sem scroll, transparente.
+    // Renderiza SOMENTE o editorUiContainer, totalmente independente
+    // do zoom 1.5x e do scroll da câmera principal.
+    // ------------------------------------------------------------------
+    const camW = this.cameras.main.width;
+    const camH = this.cameras.main.height;
 
-    const barHeight = 28;
+    this.editorUiCamera = this.cameras.add(0, 0, camW, camH, false, 'editor-ui-cam');
+    this.editorUiCamera.setZoom(1);
+    this.editorUiCamera.setScroll(0, 0);
+    this.editorUiCamera.transparent = true;
 
-    // Barra de fundo fixa no topo
-    const barBg = this.add.rectangle(0, 0, 480, barHeight, 0x14141e, 0.94)
+    // Container posicionado em coordenadas de tela (0,0 = canto superior esquerdo)
+    this.editorUiContainer = this.add.container(0, 0).setDepth(1000);
+
+    // Câmera principal ignora o container da UI
+    this.cameras.main.ignore(this.editorUiContainer);
+
+    // ------------------------------------------------------------------
+    // Constantes de layout
+    // ------------------------------------------------------------------
+    const BAR_H   = 36;   // altura total da barra
+    const BTN_H   = 22;   // altura dos botões
+    const BTN_Y   = 7;    // margem superior dos botões dentro da barra
+    const FONT_SZ = '11px';
+    const PAD_X   = 10;   // padding horizontal interno do botão
+    const GAP     = 6;    // espaço entre botões
+
+    // Fundo da barra (absorve cliques para não atravessar ao mundo)
+    const barBg = this.add.rectangle(0, 0, camW, BAR_H, 0x0d1117, 0.97)
       .setOrigin(0, 0)
       .setInteractive();
     this.editorUiContainer.add(barBg);
 
-    const barBorder = this.add.rectangle(0, barHeight, 480, 1, 0xffcc00, 0.7).setOrigin(0, 0);
+    // Linha de borda inferior
+    const barBorder = this.add.rectangle(0, BAR_H - 1, camW, 2, 0xf0c040, 1).setOrigin(0, 0);
     this.editorUiContainer.add(barBorder);
 
-    const createButton = (x, y, label, color, onClick) => {
-      const btnH = 13;
-      const btnTxt = this.add.text(x + 4, y + 2, label, {
-        fontSize: '7px',
+    // ------------------------------------------------------------------
+    // Função auxiliar: cria botão com dimensão correta
+    // ------------------------------------------------------------------
+    const _measureText = (label) => {
+      const probe = this.add.text(0, -9999, label, {
+        fontSize: FONT_SZ,
+        fontFamily: 'monospace',
+        fontStyle: 'bold',
+      });
+      const w = Math.ceil(probe.width);
+      probe.destroy();
+      return w;
+    };
+
+    const createButton = (x, label, color, onClick) => {
+      const textW = _measureText(label);
+      const btnW  = textW + PAD_X * 2;
+
+      const bg = this.add.rectangle(x, BTN_Y, btnW, BTN_H, color, 1)
+        .setOrigin(0, 0)
+        .setInteractive({ useHandCursor: true });
+
+      const txt = this.add.text(x + PAD_X, BTN_Y + Math.round((BTN_H - 11) / 2) - 1, label, {
+        fontSize: FONT_SZ,
         fontFamily: 'monospace',
         color: '#ffffff',
         fontStyle: 'bold',
       });
-      const width = Math.round(btnTxt.width + 8);
-      const btnBg = this.add.rectangle(x, y, width, btnH, color, 0.9)
-        .setOrigin(0, 0)
-        .setInteractive({ useHandCursor: true });
-      btnBg.on('pointerdown', (ptr, lx, ly, event) => {
+
+      bg.on('pointerdown', (ptr, lx, ly, event) => {
         event?.stopPropagation();
         onClick();
       });
-      btnBg.on('pointerover', () => btnBg.setAlpha(1));
-      btnBg.on('pointerout', () => btnBg.setAlpha(0.9));
+      bg.on('pointerover',  () => bg.setAlpha(0.72));
+      bg.on('pointerout',   () => bg.setAlpha(1));
 
-      this.editorUiContainer.add([btnBg, btnTxt]);
-      return { btnBg, btnTxt, width };
+      this.editorUiContainer.add([bg, txt]);
+      return { bg, txt, width: btnW };
     };
 
-    let currX = 4;
+    let currX = 8;
 
-    // Botão Alternar Modo Editor / Jogo Normal
-    this.editorToggleBtn = createButton(currX, 3, this.collisionEditorActive ? '🛠️ EDIT: ON' : '🎮 JOGO', 0x1f6feb, () => {
-      this._toggleEditorMode();
-    });
-    currX += this.editorToggleBtn.width + 4;
+    // Botão Alternar Modo
+    this.editorToggleBtn = createButton(
+      currX,
+      this.collisionEditorActive ? '🛠 EDIT:ON' : '🎮 JOGO',
+      0x1f6feb,
+      () => this._toggleEditorMode()
+    );
+    currX += this.editorToggleBtn.width + GAP;
 
-    // Botão + NOVO Collider
-    const newBtn = createButton(currX, 3, '+ NOVO', 0x238636, () => {
-      this._createNewCollider();
-    });
-    currX += newBtn.width + 4;
+    // Botão + NOVO
+    const newBtn = createButton(currX, '+ NOVO', 0x238636, () => this._createNewCollider());
+    currX += newBtn.width + GAP;
 
     // Botão DUPLICAR
-    const dupBtn = createButton(currX, 3, '📋 DUPL', 0x8957e5, () => {
-      this._duplicateSelectedCollider();
-    });
-    currX += dupBtn.width + 4;
+    const dupBtn = createButton(currX, 'DUPL', 0x8957e5, () => this._duplicateSelectedCollider());
+    currX += dupBtn.width + GAP;
 
     // Botão REMOVER
-    const delBtn = createButton(currX, 3, '🗑️ DEL', 0xda3633, () => {
-      this._removeSelectedCollider();
-    });
-    currX += delBtn.width + 4;
+    const delBtn = createButton(currX, 'DEL', 0xda3633, () => this._removeSelectedCollider());
+    currX += delBtn.width + GAP;
 
-    // Ajuste de Tamanho W e H
-    const wDec = createButton(currX, 3, 'W-', 0x30363d, () => this._resizeSelectedCollider(-4, 0));
-    currX += wDec.width + 2;
-    const wInc = createButton(currX, 3, 'W+', 0x30363d, () => this._resizeSelectedCollider(4, 0));
-    currX += wInc.width + 3;
-    const hDec = createButton(currX, 3, 'H-', 0x30363d, () => this._resizeSelectedCollider(0, -4));
-    currX += hDec.width + 2;
-    const hInc = createButton(currX, 3, 'H+', 0x30363d, () => this._resizeSelectedCollider(0, 4));
-    currX += hInc.width + 4;
+    // Botões de resize W−/W+/H−/H+
+    const resizeDefs = [
+      ['W-', () => this._resizeSelectedCollider(-4, 0)],
+      ['W+', () => this._resizeSelectedCollider( 4, 0)],
+      ['H-', () => this._resizeSelectedCollider( 0, -4)],
+      ['H+', () => this._resizeSelectedCollider( 0,  4)],
+    ];
+    resizeDefs.forEach(([lbl, cb], i) => {
+      const btn = createButton(currX, lbl, 0x30363d, cb);
+      currX += btn.width + (i % 2 === 1 ? GAP + 2 : 2);
+    });
 
     // Botão EXPORTAR
-    const expBtn = createButton(currX, 3, '💾 EXPORT', 0xd29922, () => {
-      this._exportColliders();
-    });
-    currX += expBtn.width + 4;
+    createButton(currX, 'EXPORT', 0xd29922, () => this._exportColliders());
 
-    // Texto de status e coordenadas do collider selecionado
-    this.editorStatusText = this.add.text(4, 18, '', {
-      fontSize: '6px',
+    // ------------------------------------------------------------------
+    // Texto de status — segunda linha abaixo da barra
+    // ------------------------------------------------------------------
+    this.editorStatusText = this.add.text(8, BAR_H + 2, '', {
+      fontSize: '10px',
       fontFamily: 'monospace',
-      color: '#ffdd66',
+      color: '#f0c040',
+      backgroundColor: '#0d1117cc',
+      padding: { x: 4, y: 2 },
     });
     this.editorUiContainer.add(this.editorStatusText);
 
-    this._alignEditorDebugUI();
+    // Câmera de UI ignora todos os outros objetos da cena
+    this.editorUiCamera.ignore(
+      this.children.list.filter((c) => c !== this.editorUiContainer)
+    );
   }
 
   _toggleEditorMode() {
     this.collisionEditorActive = !this.collisionEditorActive;
     if (this.editorToggleBtn) {
-      this.editorToggleBtn.btnTxt.setText(this.collisionEditorActive ? '🛠️ EDIT: ON' : '🎮 JOGO');
-      const newWidth = Math.round(this.editorToggleBtn.btnTxt.width + 8);
-      this.editorToggleBtn.btnBg.setSize(newWidth, 13);
+      const newLabel = this.collisionEditorActive ? '🛠 EDIT:ON' : '🎮 JOGO';
+      this.editorToggleBtn.txt.setText(newLabel);
+      const newWidth = Math.ceil(this.editorToggleBtn.txt.width) + 20;
+      this.editorToggleBtn.bg.setSize(newWidth, 22);
     }
     this.selectedCollider = null;
     this.isDraggingCollider = false;
@@ -719,5 +756,9 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.editorGraphics?.destroy();
     this.editorWorldLabels?.forEach((lbl) => lbl.destroy());
     this.editorUiContainer?.destroy();
+    if (this.editorUiCamera) {
+      this.cameras.remove(this.editorUiCamera);
+      this.editorUiCamera = null;
+    }
   }
 }

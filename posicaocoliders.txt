@@ -1,0 +1,275 @@
+[
+  {
+    "label": "Colisor 5 (Cópia)",
+    "x": 203,
+    "y": 773,
+    "width": 20,
+    "height": 200
+  },
+  {
+    "label": "Colisor 7",
+    "x": 334,
+    "y": 153,
+    "width": 180,
+    "height": 40
+  },
+  {
+    "label": "Colisor 7 (Cópia)",
+    "x": 151,
+    "y": 153,
+    "width": 200,
+    "height": 40
+  },
+  {
+    "label": "Colisor 9",
+    "x": 46,
+    "y": 245,
+    "width": 16,
+    "height": 424
+  },
+  {
+    "label": "Colisor 10",
+    "x": 164,
+    "y": 364,
+    "width": 216,
+    "height": 24
+  },
+  {
+    "label": "Colisor 11",
+    "x": 341,
+    "y": 221,
+    "width": 156,
+    "height": 24
+  },
+  {
+    "label": "Colisor 11 (Cópia)",
+    "x": 545,
+    "y": 220,
+    "width": 160,
+    "height": 24
+  },
+  {
+    "label": "Colisor 11 (Cópia) (Cópia)",
+    "x": 547,
+    "y": 236,
+    "width": 164,
+    "height": 40
+  },
+  {
+    "label": "Colisor 11 (Cópia) (Cópia) (Cópia)",
+    "x": 342,
+    "y": 236,
+    "width": 156,
+    "height": 40
+  },
+  {
+    "label": "Colisor 15",
+    "x": 745,
+    "y": 366,
+    "width": 244,
+    "height": 24
+  },
+  {
+    "label": "Colisor 16",
+    "x": 860,
+    "y": 309,
+    "width": 44,
+    "height": 288
+  },
+  {
+    "label": "Colisor 15 (Cópia)",
+    "x": 179,
+    "y": 40,
+    "width": 188,
+    "height": 24
+  },
+  {
+    "label": "Colisor 15 (Cópia)",
+    "x": 212,
+    "y": 15,
+    "width": 244,
+    "height": 24
+  },
+  {
+    "label": "Colisor 19",
+    "x": 656,
+    "y": 152,
+    "width": 376,
+    "height": 40
+  },
+  {
+    "label": "Colisor 20",
+    "x": 619,
+    "y": 345,
+    "width": 20,
+    "height": 204
+  },
+  {
+    "label": "Colisor 20 (Cópia)",
+    "x": 619,
+    "y": 460,
+    "width": 20,
+    "height": 204
+  },
+  {
+    "label": "Colisor 22",
+    "x": 271,
+    "y": 307,
+    "width": 16,
+    "height": 144
+  },
+  {
+    "label": "Colisor 23",
+    "x": 499,
+    "y": 39,
+    "width": 292,
+    "height": 8
+  },
+  {
+    "label": "Colisor 24",
+    "x": 304,
+    "y": 27,
+    "width": 92,
+    "height": 8
+  },
+  {
+    "label": "Colisor 25",
+    "x": 264,
+    "y": 65,
+    "width": 20,
+    "height": 128
+  },
+  {
+    "label": "Colisor 25",
+    "x": 547,
+    "y": 567,
+    "width": 164,
+    "height": 44
+  },
+  {
+    "label": "Colisor 25 (Cópia)",
+    "x": 341,
+    "y": 566,
+    "width": 156,
+    "height": 44
+  },
+  {
+    "label": "Colisor 27",
+    "x": 271,
+    "y": 461,
+    "width": 16,
+    "height": 176
+  },
+  {
+    "label": "Colisor 28",
+    "x": 143,
+    "y": 482,
+    "width": 228,
+    "height": 24
+  },
+  {
+    "label": "Colisor 29",
+    "x": 42,
+    "y": 558,
+    "width": 20,
+    "height": 188
+  },
+  {
+    "label": "Colisor 30",
+    "x": 234,
+    "y": 649,
+    "width": 368,
+    "height": 44
+  },
+  {
+    "label": "Colisor 27",
+    "x": 301,
+    "y": 878,
+    "width": 248,
+    "height": 24
+  },
+  {
+    "label": "Colisor 27 (Cópia)",
+    "x": 544,
+    "y": 878,
+    "width": 272,
+    "height": 24
+  },
+  {
+    "label": "Colisor 29",
+    "x": 682,
+    "y": 789,
+    "width": 20,
+    "height": 228
+  },
+  {
+    "label": "Colisor 30",
+    "x": 490,
+    "y": 647,
+    "width": 48,
+    "height": 44
+  },
+  {
+    "label": "Colisor 30 (Cópia)",
+    "x": 659,
+    "y": 647,
+    "width": 56,
+    "height": 44
+  },
+  {
+    "label": "Colisor 32",
+    "x": 573,
+    "y": 659,
+    "width": 140,
+    "height": 68
+  },
+  {
+    "label": "Colisor 33",
+    "x": 278,
+    "y": 756,
+    "width": 80,
+    "height": 28
+  },
+  {
+    "label": "Colisor 34",
+    "x": 677,
+    "y": 503,
+    "width": 136,
+    "height": 24
+  },
+  {
+    "label": "Colisor 35",
+    "x": 770,
+    "y": 492,
+    "width": 160,
+    "height": 8
+  },
+  {
+    "label": "Colisor 36",
+    "x": 844,
+    "y": 529,
+    "width": 20,
+    "height": 248
+  },
+  {
+    "label": "Colisor 37",
+    "x": 733,
+    "y": 637,
+    "width": 204,
+    "height": 24
+  },
+  {
+    "label": "Colisor 38",
+    "x": 309,
+    "y": 84,
+    "width": 84,
+    "height": 24
+  },
+  {
+    "label": "Colisor 39",
+    "x": 622,
+    "y": 73,
+    "width": 24,
+    "height": 112
+  }
+]
