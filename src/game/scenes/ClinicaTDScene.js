@@ -12,9 +12,6 @@ import { dialogueData } from '../../data/dialogueData';
 import { quizData } from '../../data/quizData';
 import AdminDecoratorSystem from '../systems/AdminDecoratorSystem';
 
-const COLLISION_EDITOR = true;
-
-
 /**
  * ClinicaTDScene
  *
@@ -83,12 +80,12 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this.wallGroup = this.physics.add.staticGroup();
     this.physics.add.collider(this.player, this.wallGroup);
 
+    // Carrega os colliders definitivos no wallGroup
+    this._buildColliders();
+
     // Camera
     setupCameraRigTopDown(this, this.player, mapBg.displayWidth, mapBg.displayHeight);
     this.cameras.main.setZoom(1.5);
-
-    // Inicializa o Editor Visual Temporario de Colisoes (COLLISION_EDITOR)
-    this._initCollisionEditor();
 
     // NPCs e zonas de interacao
     this.interactionSystem = new InteractionSystem(this, this.player);
@@ -115,6 +112,63 @@ export default class ClinicaTDScene extends Phaser.Scene {
         color: '#444438',
         align: 'center',
       }).setOrigin(0.5).setDepth(DEPTH.PROPS_BACK);
+    });
+  }
+
+  /**
+   * Cria as zonas de colisão estáticas definitivas no wallGroup.
+   *
+   * Dados exportados do Editor Visual — mapa 944×928 px, origem (0,0), escala 1:1.
+   * x/y = centro do retângulo; width/height = dimensões.
+   * Cada zone é criada com setOrigin(0.5, 0.5) e adicionada ao staticGroup.
+   */
+  _buildColliders() {
+    const colliders = [
+      { label: 'Colisor 5 (Cópia)',                       x: 203, y: 773, width:  20, height: 200 },
+      { label: 'Colisor 7',                               x: 334, y: 153, width: 180, height:  40 },
+      { label: 'Colisor 7 (Cópia)',                       x: 151, y: 153, width: 200, height:  40 },
+      { label: 'Colisor 9',                               x:  46, y: 245, width:  16, height: 424 },
+      { label: 'Colisor 10',                              x: 164, y: 364, width: 216, height:  24 },
+      { label: 'Colisor 11',                              x: 341, y: 221, width: 156, height:  24 },
+      { label: 'Colisor 11 (Cópia)',                      x: 545, y: 220, width: 160, height:  24 },
+      { label: 'Colisor 11 (Cópia) (Cópia)',              x: 547, y: 236, width: 164, height:  40 },
+      { label: 'Colisor 11 (Cópia) (Cópia) (Cópia)',     x: 342, y: 236, width: 156, height:  40 },
+      { label: 'Colisor 15',                              x: 745, y: 366, width: 244, height:  24 },
+      { label: 'Colisor 16',                              x: 860, y: 309, width:  44, height: 288 },
+      { label: 'Colisor 15 (Cópia)',                      x: 179, y:  40, width: 188, height:  24 },
+      { label: 'Colisor 15 (Cópia)',                      x: 212, y:  15, width: 244, height:  24 },
+      { label: 'Colisor 19',                              x: 656, y: 152, width: 376, height:  40 },
+      { label: 'Colisor 20',                              x: 619, y: 345, width:  20, height: 204 },
+      { label: 'Colisor 20 (Cópia)',                      x: 619, y: 460, width:  20, height: 204 },
+      { label: 'Colisor 22',                              x: 271, y: 307, width:  16, height: 144 },
+      { label: 'Colisor 23',                              x: 499, y:  39, width: 292, height:   8 },
+      { label: 'Colisor 24',                              x: 304, y:  27, width:  92, height:   8 },
+      { label: 'Colisor 25',                              x: 264, y:  65, width:  20, height: 128 },
+      { label: 'Colisor 25',                              x: 547, y: 567, width: 164, height:  44 },
+      { label: 'Colisor 25 (Cópia)',                      x: 341, y: 566, width: 156, height:  44 },
+      { label: 'Colisor 27',                              x: 271, y: 461, width:  16, height: 176 },
+      { label: 'Colisor 28',                              x: 143, y: 482, width: 228, height:  24 },
+      { label: 'Colisor 29',                              x:  42, y: 558, width:  20, height: 188 },
+      { label: 'Colisor 30',                              x: 234, y: 649, width: 368, height:  44 },
+      { label: 'Colisor 27',                              x: 301, y: 878, width: 248, height:  24 },
+      { label: 'Colisor 27 (Cópia)',                      x: 544, y: 878, width: 272, height:  24 },
+      { label: 'Colisor 29',                              x: 682, y: 789, width:  20, height: 228 },
+      { label: 'Colisor 30',                              x: 490, y: 647, width:  48, height:  44 },
+      { label: 'Colisor 30 (Cópia)',                      x: 659, y: 647, width:  56, height:  44 },
+      { label: 'Colisor 32',                              x: 573, y: 659, width: 140, height:  68 },
+      { label: 'Colisor 33',                              x: 278, y: 756, width:  80, height:  28 },
+      { label: 'Colisor 34',                              x: 677, y: 503, width: 136, height:  24 },
+      { label: 'Colisor 35',                              x: 770, y: 492, width: 160, height:   8 },
+      { label: 'Colisor 36',                              x: 844, y: 529, width:  20, height: 248 },
+      { label: 'Colisor 37',                              x: 733, y: 637, width: 204, height:  24 },
+      { label: 'Colisor 38',                              x: 309, y:  84, width:  84, height:  24 },
+      { label: 'Colisor 39',                              x: 622, y:  73, width:  24, height: 112 },
+    ];
+
+    colliders.forEach(({ x, y, width, height }) => {
+      const zone = this.add.zone(x, y, width, height).setOrigin(0.5, 0.5);
+      this.physics.add.existing(zone, true);
+      this.wallGroup.add(zone);
     });
   }
 
@@ -304,461 +358,10 @@ export default class ClinicaTDScene extends Phaser.Scene {
     this._cleanedUp = true;
     this.interactionSystem?.destroy();
     this.adminDecoratorSystem?.destroy();
-    this._cleanupCollisionEditor();
   }
 
   update(time, delta) {
     if (this.player) this.player.update(time, delta);
     // InteractionSystem ja se registra em scene.events.on('update') internamente
-  }
-
-  // =========================================================================
-  // EDITOR VISUAL TEMPORÁRIO DE COLISÕES (In-Scene)
-  // =========================================================================
-
-  _initCollisionEditor() {
-    this.collisionEditorActive = COLLISION_EDITOR;
-    this.selectedCollider = null;
-    this.isDraggingCollider = false;
-    this.dragOffset = { x: 0, y: 0 };
-
-    // Lista de caixas de colisão no mapa (944x928)
-    // Inicializa com a colisão frontal da mesa da Bianca
-    this.collisionBoxes = [
-      {
-        id: 1,
-        label: 'Mesa Dra. Bianca',
-        x: Math.round(this.mapBg.displayWidth * 0.355), // 335
-        y: Math.round(this.mapBg.displayHeight * 0.155), // 144
-        width: 64,
-        height: 24,
-      },
-    ];
-
-    // Registra os colliders estáticos no wallGroup
-    this.collisionBoxes.forEach((box) => this._syncBoxPhysics(box));
-
-    // Camada gráfica para desenhar as caixas de colisão sobre o mapa
-    this.editorGraphics = this.add.graphics().setDepth(200);
-    this.editorWorldLabels = [];
-
-    // Interface de debug fixa na tela via câmera de UI dedicada
-    this._createEditorDebugUI();
-
-    // Eventos de entrada para seleção e arrasto
-    this._bindEditorInputEvents();
-
-    // Renderiza inicialmente
-    this._renderCollisionEditor();
-  }
-
-  /** Cria ou sincroniza a zona física estática no wallGroup. */
-  _syncBoxPhysics(box) {
-    if (box.zone && box.zone.destroy) {
-      box.zone.destroy();
-    }
-    const zone = this.add.zone(box.x, box.y, box.width, box.height).setOrigin(0.5, 0.5);
-    this.physics.add.existing(zone, true);
-    this.wallGroup.add(zone);
-    box.zone = zone;
-  }
-
-  /** Identifica se o ponteiro clicou no interior de algum collider existente. */
-  _findColliderAt(wx, wy) {
-    for (let i = this.collisionBoxes.length - 1; i >= 0; i--) {
-      const b = this.collisionBoxes[i];
-      const body = b.zone?.body;
-      const left = body ? body.left : b.x - b.width / 2;
-      const top = body ? body.top : b.y - b.height / 2;
-      const width = body ? body.width : b.width;
-      const height = body ? body.height : b.height;
-      if (
-        wx >= left &&
-        wx <= left + width &&
-        wy >= top &&
-        wy <= top + height
-      ) {
-        return b;
-      }
-    }
-    return null;
-  }
-
-  _bindEditorInputEvents() {
-    this.onEditorPointerDown = (pointer) => {
-      if (!this.collisionEditorActive) return;
-
-      // Se clicou na barra de debug fixa no topo (Y < 38), não processa no mundo
-      if (pointer.y < 38) return;
-
-      const clicked = this._findColliderAt(pointer.worldX, pointer.worldY);
-      if (clicked) {
-        this.selectedCollider = clicked;
-        this.isDraggingCollider = true;
-        this.dragOffset = {
-          x: pointer.worldX - clicked.x,
-          y: pointer.worldY - clicked.y,
-        };
-      } else {
-        this.selectedCollider = null;
-        this.isDraggingCollider = false;
-      }
-      this._renderCollisionEditor();
-    };
-
-    this.onEditorPointerMove = (pointer) => {
-      if (!this.collisionEditorActive || !this.isDraggingCollider || !this.selectedCollider) return;
-
-      // Move o collider selecionado arrastando o seu interior
-      this.selectedCollider.x = Math.round(pointer.worldX - this.dragOffset.x);
-      this.selectedCollider.y = Math.round(pointer.worldY - this.dragOffset.y);
-
-      this._syncBoxPhysics(this.selectedCollider);
-      this._renderCollisionEditor();
-    };
-
-    this.onEditorPointerUp = () => {
-      if (this.isDraggingCollider) {
-        this.isDraggingCollider = false;
-        this._renderCollisionEditor();
-      }
-    };
-
-    this.input.on('pointerdown', this.onEditorPointerDown);
-    this.input.on('pointermove', this.onEditorPointerMove);
-    this.input.on('pointerup', this.onEditorPointerUp);
-
-    // Tecla F2 para alternar rapidamente entre modo editor e jogo
-    this.onEditorKeyDown = (event) => {
-      if (event.key === 'F2') {
-        this._toggleEditorMode();
-      } else if (this.collisionEditorActive && this.selectedCollider) {
-        if (event.key === 'Delete' || event.key === 'Backspace') {
-          this._removeSelectedCollider();
-        } else if (event.key.toLowerCase() === 'd') {
-          this._duplicateSelectedCollider();
-        }
-      }
-    };
-    this.input.keyboard?.on('keydown', this.onEditorKeyDown);
-  }
-
-  _createEditorDebugUI() {
-    // ------------------------------------------------------------------
-    // Câmera de UI dedicada — zoom=1, sem scroll, transparente.
-    // Renderiza SOMENTE o editorUiContainer, totalmente independente
-    // do zoom 1.5x e do scroll da câmera principal.
-    // ------------------------------------------------------------------
-    const camW = this.cameras.main.width;
-    const camH = this.cameras.main.height;
-
-    this.editorUiCamera = this.cameras.add(0, 0, camW, camH, false, 'editor-ui-cam');
-    this.editorUiCamera.setZoom(1);
-    this.editorUiCamera.setScroll(0, 0);
-    this.editorUiCamera.transparent = true;
-
-    // Container posicionado em coordenadas de tela (0,0 = canto superior esquerdo)
-    this.editorUiContainer = this.add.container(0, 0).setDepth(1000);
-
-    // Câmera principal ignora o container da UI
-    this.cameras.main.ignore(this.editorUiContainer);
-
-    // ------------------------------------------------------------------
-    // Constantes de layout
-    // ------------------------------------------------------------------
-    const BAR_H   = 36;   // altura total da barra
-    const BTN_H   = 22;   // altura dos botões
-    const BTN_Y   = 7;    // margem superior dos botões dentro da barra
-    const FONT_SZ = '11px';
-    const PAD_X   = 10;   // padding horizontal interno do botão
-    const GAP     = 6;    // espaço entre botões
-
-    // Fundo da barra (absorve cliques para não atravessar ao mundo)
-    const barBg = this.add.rectangle(0, 0, camW, BAR_H, 0x0d1117, 0.97)
-      .setOrigin(0, 0)
-      .setInteractive();
-    this.editorUiContainer.add(barBg);
-
-    // Linha de borda inferior
-    const barBorder = this.add.rectangle(0, BAR_H - 1, camW, 2, 0xf0c040, 1).setOrigin(0, 0);
-    this.editorUiContainer.add(barBorder);
-
-    // ------------------------------------------------------------------
-    // Função auxiliar: cria botão com dimensão correta
-    // ------------------------------------------------------------------
-    const _measureText = (label) => {
-      const probe = this.add.text(0, -9999, label, {
-        fontSize: FONT_SZ,
-        fontFamily: 'monospace',
-        fontStyle: 'bold',
-      });
-      const w = Math.ceil(probe.width);
-      probe.destroy();
-      return w;
-    };
-
-    const createButton = (x, label, color, onClick) => {
-      const textW = _measureText(label);
-      const btnW  = textW + PAD_X * 2;
-
-      const bg = this.add.rectangle(x, BTN_Y, btnW, BTN_H, color, 1)
-        .setOrigin(0, 0)
-        .setInteractive({ useHandCursor: true });
-
-      const txt = this.add.text(x + PAD_X, BTN_Y + Math.round((BTN_H - 11) / 2) - 1, label, {
-        fontSize: FONT_SZ,
-        fontFamily: 'monospace',
-        color: '#ffffff',
-        fontStyle: 'bold',
-      });
-
-      bg.on('pointerdown', (ptr, lx, ly, event) => {
-        event?.stopPropagation();
-        onClick();
-      });
-      bg.on('pointerover',  () => bg.setAlpha(0.72));
-      bg.on('pointerout',   () => bg.setAlpha(1));
-
-      this.editorUiContainer.add([bg, txt]);
-      return { bg, txt, width: btnW };
-    };
-
-    let currX = 8;
-
-    // Botão Alternar Modo
-    this.editorToggleBtn = createButton(
-      currX,
-      this.collisionEditorActive ? '🛠 EDIT:ON' : '🎮 JOGO',
-      0x1f6feb,
-      () => this._toggleEditorMode()
-    );
-    currX += this.editorToggleBtn.width + GAP;
-
-    // Botão + NOVO
-    const newBtn = createButton(currX, '+ NOVO', 0x238636, () => this._createNewCollider());
-    currX += newBtn.width + GAP;
-
-    // Botão DUPLICAR
-    const dupBtn = createButton(currX, 'DUPL', 0x8957e5, () => this._duplicateSelectedCollider());
-    currX += dupBtn.width + GAP;
-
-    // Botão REMOVER
-    const delBtn = createButton(currX, 'DEL', 0xda3633, () => this._removeSelectedCollider());
-    currX += delBtn.width + GAP;
-
-    // Botões de resize W−/W+/H−/H+
-    const resizeDefs = [
-      ['W-', () => this._resizeSelectedCollider(-4, 0)],
-      ['W+', () => this._resizeSelectedCollider( 4, 0)],
-      ['H-', () => this._resizeSelectedCollider( 0, -4)],
-      ['H+', () => this._resizeSelectedCollider( 0,  4)],
-    ];
-    resizeDefs.forEach(([lbl, cb], i) => {
-      const btn = createButton(currX, lbl, 0x30363d, cb);
-      currX += btn.width + (i % 2 === 1 ? GAP + 2 : 2);
-    });
-
-    // Botão EXPORTAR
-    createButton(currX, 'EXPORT', 0xd29922, () => this._exportColliders());
-
-    // ------------------------------------------------------------------
-    // Texto de status — segunda linha abaixo da barra
-    // ------------------------------------------------------------------
-    this.editorStatusText = this.add.text(8, BAR_H + 2, '', {
-      fontSize: '10px',
-      fontFamily: 'monospace',
-      color: '#f0c040',
-      backgroundColor: '#0d1117cc',
-      padding: { x: 4, y: 2 },
-    });
-    this.editorUiContainer.add(this.editorStatusText);
-
-    // Câmera de UI ignora todos os outros objetos da cena
-    this.editorUiCamera.ignore(
-      this.children.list.filter((c) => c !== this.editorUiContainer)
-    );
-  }
-
-  _toggleEditorMode() {
-    this.collisionEditorActive = !this.collisionEditorActive;
-    if (this.editorToggleBtn) {
-      const newLabel = this.collisionEditorActive ? '🛠 EDIT:ON' : '🎮 JOGO';
-      this.editorToggleBtn.txt.setText(newLabel);
-      const newWidth = Math.ceil(this.editorToggleBtn.txt.width) + 20;
-      this.editorToggleBtn.bg.setSize(newWidth, 22);
-    }
-    this.selectedCollider = null;
-    this.isDraggingCollider = false;
-    this._renderCollisionEditor();
-  }
-
-  _createNewCollider() {
-    // Posiciona no centro visível da câmera ou ponto padrão
-    const cx = Math.round(this.cameras.main.worldView.centerX || 472);
-    const cy = Math.round(this.cameras.main.worldView.centerY || 464);
-    const newBox = {
-      id: Date.now(),
-      label: `Colisor ${this.collisionBoxes.length + 1}`,
-      x: cx,
-      y: cy,
-      width: 48,
-      height: 24,
-    };
-    this.collisionBoxes.push(newBox);
-    this._syncBoxPhysics(newBox);
-    this.selectedCollider = newBox;
-    this._renderCollisionEditor();
-  }
-
-  _duplicateSelectedCollider() {
-    if (!this.selectedCollider) return;
-    const newBox = {
-      id: Date.now(),
-      label: `${this.selectedCollider.label} (Cópia)`,
-      x: this.selectedCollider.x + 16,
-      y: this.selectedCollider.y + 16,
-      width: this.selectedCollider.width,
-      height: this.selectedCollider.height,
-    };
-    this.collisionBoxes.push(newBox);
-    this._syncBoxPhysics(newBox);
-    this.selectedCollider = newBox;
-    this._renderCollisionEditor();
-  }
-
-  _removeSelectedCollider() {
-    if (!this.selectedCollider) return;
-    if (this.selectedCollider.zone && this.selectedCollider.zone.destroy) {
-      this.selectedCollider.zone.destroy();
-    }
-    this.collisionBoxes = this.collisionBoxes.filter((b) => b !== this.selectedCollider);
-    this.selectedCollider = null;
-    this._renderCollisionEditor();
-  }
-
-  _resizeSelectedCollider(deltaW, deltaH) {
-    if (!this.selectedCollider) return;
-    this.selectedCollider.width = Math.max(8, this.selectedCollider.width + deltaW);
-    this.selectedCollider.height = Math.max(8, this.selectedCollider.height + deltaH);
-    this._syncBoxPhysics(this.selectedCollider);
-    this._renderCollisionEditor();
-  }
-
-  _exportColliders() {
-    const list = this.collisionBoxes.map(({ label, x, y, width, height }) => ({
-      label,
-      x,
-      y,
-      width,
-      height,
-    }));
-    const jsonStr = JSON.stringify(list, null, 2);
-    console.log('[ClinicaTDScene] Colisões Atuais:\n', jsonStr);
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(jsonStr).catch(() => {});
-    }
-    if (this.editorStatusText) {
-      this.editorStatusText.setText('✅ JSON copiado para o Clipboard e exibido no console (F12)!');
-      this.time.delayedCall(2500, () => this._updateStatusText());
-    }
-  }
-
-  _updateStatusText() {
-    if (!this.editorStatusText) return;
-    if (!this.collisionEditorActive) {
-      this.editorStatusText.setText('MODO JOGO ATIVO. Colliders invisíveis. Clique [JOGO] ou F2 para abrir o editor.');
-      return;
-    }
-    if (this.selectedCollider) {
-      const b = this.selectedCollider;
-      const body = b.zone?.body;
-      const left = Math.round(body ? body.left : b.x - b.width / 2);
-      const top = Math.round(body ? body.top : b.y - b.height / 2);
-      const width = Math.round(body ? body.width : b.width);
-      const height = Math.round(body ? body.height : b.height);
-      this.editorStatusText.setText(
-        `SEL: ${b.label} | Centro: (${b.x}, ${b.y}) | Tam: ${width}x${height} | Top-Left: (${left}, ${top})`
-      );
-    } else {
-      this.editorStatusText.setText(
-        `EDITOR ATIVO (${this.collisionBoxes.length} colliders). Clique para selecionar e arraste para mover.`
-      );
-    }
-  }
-
-  _renderCollisionEditor() {
-    this.editorGraphics.clear();
-
-    // Remove rótulos visuais de mundo anteriores
-    this.editorWorldLabels.forEach((lbl) => lbl.destroy());
-    this.editorWorldLabels = [];
-
-    this._updateStatusText();
-
-    // Se o editor estiver desativado, colliders permanecem 100% invisíveis
-    if (!this.collisionEditorActive) return;
-
-    this.collisionBoxes.forEach((box) => {
-      const isSelected = box === this.selectedCollider;
-      const body = box.zone?.body;
-      const left = body ? body.left : (box.x - box.width / 2);
-      const top = body ? body.top : (box.y - box.height / 2);
-      const width = body ? body.width : box.width;
-      const height = body ? body.height : box.height;
-
-      if (isSelected) {
-        // Preenchimento Amarelo / Dourado para o selecionado
-        this.editorGraphics.fillStyle(0xffff00, 0.45);
-        this.editorGraphics.fillRect(left, top, width, height);
-
-        this.editorGraphics.lineStyle(2, 0xffff00, 1);
-        this.editorGraphics.strokeRect(left, top, width, height);
-
-        // Indicador central exato do corpo físico
-        const centerX = body?.center ? body.center.x : (left + width / 2);
-        const centerY = body?.center ? body.center.y : (top + height / 2);
-        this.editorGraphics.fillStyle(0xffffff, 1);
-        this.editorGraphics.fillRect(centerX - 2, centerY - 2, 4, 4);
-      } else {
-        // Preenchimento Vermelho translúcido para os demais
-        this.editorGraphics.fillStyle(0xff2222, 0.3);
-        this.editorGraphics.fillRect(left, top, width, height);
-
-        this.editorGraphics.lineStyle(1.5, 0xff0000, 0.85);
-        this.editorGraphics.strokeRect(left, top, width, height);
-      }
-
-      // Rótulo com dimensões e posição sobre o PNG
-      const labelText = this.add.text(
-        left + 2,
-        top + 2,
-        `${box.label || ''}\n${width}x${height} (${Math.round(left)},${Math.round(top)})`,
-        {
-          fontSize: '5px',
-          fontFamily: 'monospace',
-          color: isSelected ? '#ffff00' : '#ffffff',
-          backgroundColor: '#000000bb',
-          padding: { x: 2, y: 1 },
-        }
-      ).setDepth(201);
-      this.editorWorldLabels.push(labelText);
-    });
-  }
-
-  _cleanupCollisionEditor() {
-    this.input.off('pointerdown', this.onEditorPointerDown);
-    this.input.off('pointermove', this.onEditorPointerMove);
-    this.input.off('pointerup', this.onEditorPointerUp);
-    if (this.onEditorKeyDown) {
-      this.input.keyboard?.off('keydown', this.onEditorKeyDown);
-    }
-
-    this.editorGraphics?.destroy();
-    this.editorWorldLabels?.forEach((lbl) => lbl.destroy());
-    this.editorUiContainer?.destroy();
-    if (this.editorUiCamera) {
-      this.cameras.remove(this.editorUiCamera);
-      this.editorUiCamera = null;
-    }
   }
 }
